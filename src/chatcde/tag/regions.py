@@ -37,6 +37,7 @@ class Country:
     """One row of ``vocab/m49.csv``."""
 
     alpha3: str
+    alpha2: str
     name: str
     region_code: str
     region: str
@@ -74,6 +75,7 @@ def load_countries(path: Path) -> dict[str, Country]:
         return {
             r["alpha3"]: Country(
                 alpha3=r["alpha3"],
+                alpha2=r["alpha2"],
                 name=r["name"],
                 region_code=r["region_code"],
                 region=r["region"],
@@ -84,6 +86,32 @@ def load_countries(path: Path) -> dict[str, Country]:
             )
             for r in csv.DictReader(f)
         }
+
+
+def country_lookup(
+    countries: dict[str, Country], aliases: dict[str, str]
+) -> dict[str, str]:
+    """Every accepted spelling of a country, upper-case, mapped to its alpha-3 code.
+
+    The model is asked for ISO 3166-1 alpha-3 codes, but sometimes writes sports
+    codes (``LIT`` for Lithuania, ``MOR`` for Morocco), alpha-2 codes or names
+    (#70). Accepted, in order of precedence: the alpha-3 codes themselves, then
+    ``aliases`` (``tagging.country_aliases``), then alpha-2 codes, then English
+    names from ``vocab/m49.csv``. A valid alpha-3 code is never remapped.
+
+    Raises:
+        ValueError: An alias points to a code that is not in the country table.
+    """
+    if bad := sorted(v for v in aliases.values() if v not in countries):
+        raise ValueError(f"tagging.country_aliases: unknown alpha-3 codes {bad}")
+    out: dict[str, str] = {}
+    for c in countries.values():
+        out.setdefault(c.name.upper(), c.alpha3)
+        if c.alpha2:
+            out.setdefault(c.alpha2.upper(), c.alpha3)
+    out.update({k.upper(): v for k, v in aliases.items()})
+    out.update({a3: a3 for a3 in countries})
+    return out
 
 
 class RegionMap:

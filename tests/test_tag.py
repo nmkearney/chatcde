@@ -31,7 +31,13 @@ from chatcde.tag.derive import derive, derived_provenance, none_tags, publish
 from chatcde.tag.extract import RecordText
 from chatcde.tag.llm import load_prompt
 from chatcde.tag.prompt import split_template, system_prompt
-from chatcde.tag.regions import GLOBAL_FLAG, PARTNER_COUNTRY, RegionMap, load_countries
+from chatcde.tag.regions import (
+    GLOBAL_FLAG,
+    PARTNER_COUNTRY,
+    RegionMap,
+    country_lookup,
+    load_countries,
+)
 from chatcde.tag.run import locate, scope_ids, tag_records, to_tags
 from chatcde.tag.sample import draw_pilot
 from chatcde.tag.vocabulary import load_vocabulary
@@ -203,6 +209,41 @@ def test_batch_model_offers_only_live_codes(
     ):
         with pytest.raises(ValidationError):
             model.model_validate(bad)
+
+
+def test_country_codes_are_normalised_before_validation(
+    cfg0: Config,
+    vocab: dict[str, Any],
+    countries: dict[str, Any],
+    caplog: pytest.LogCaptureFixture,
+):
+    """#70: sports codes, alpha-2 codes and names map to alpha-3; others are dropped."""
+    s = cfg0.tagging
+    model = batch_model("how_where", s.batches["how_where"], vocab, countries, s)
+    tag = {"evidence": "q", "strength": "explicit"}
+    terms = ["LIT", "MOR", "np", "Switzerland", "CHE", GLOBAL_FLAG, "KOS", "DAT-x"]
+    answer = model.model_validate(
+        {
+            "method": [],
+            "data_type": [],
+            "setting": [],
+            "scale": [],
+            "country": [{**tag, "term": t} for t in terms],
+        }
+    )
+    got = [t.term for t in answer.country]
+    assert got == ["LTU", "MAR", "NPL", "CHE", "CHE", GLOBAL_FLAG]
+    assert "'KOS' is not a country" in caplog.text
+    assert "'DAT-x' is not a country" in caplog.text
+
+
+def test_country_lookup_never_remaps_iso_codes(countries: dict[str, Any]):
+    lookup = country_lookup(countries, {"LIT": "LTU", "che": "DEU"})
+    assert lookup["LIT"] == "LTU"
+    assert lookup["CHE"] == "CHE"  # a valid alpha-3 code wins over an alias
+    assert lookup["DE"] == "DEU"
+    with pytest.raises(ValueError, match="unknown alpha-3"):
+        country_lookup(countries, {"LIT": "XXX"})
 
 
 # --- prompt ---------------------------------------------------------------------
