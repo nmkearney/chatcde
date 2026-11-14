@@ -49,6 +49,14 @@ TABLES: dict[str, type[BaseModel]] = {
     "chunks": Chunk,
 }
 
+#: Dimensions renamed after tags were stored: old name -> new name. Kept so any
+#: older catalogue can still be migrated (``chatcde migrate``, decision 0040).
+RENAMED_DIMENSIONS: dict[str, str] = {"output_type": "audience_type"}
+
+#: Tables whose ``dimension`` column holds :class:`~chatcde.schemas.Dimension` values:
+#: the published tags and every tagging run's tags (``chatcde.tag.tables``).
+DIMENSION_TABLES: tuple[str, ...] = ("tags", "tag_runs")
+
 _SCALARS: dict[type, str] = {
     str: "VARCHAR",
     int: "BIGINT",
@@ -183,3 +191,36 @@ def replace_tables(
     except BaseException:
         con.execute("ROLLBACK")
         raise
+
+
+def migrate(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
+    """Bring stored rows up to the current schema; safe to run again.
+
+    Today this renames old dimension names (:data:`RENAMED_DIMENSIONS`) in every
+    table of :data:`DIMENSION_TABLES` that exists. Without it, tags stored under an
+    old name would silently drop out of every count and filter. All tables change
+    in one transaction, so a failure leaves the catalogue as it was.
+
+    Returns:
+        Rows changed per ``"<table>.<old>"``; all zeros on an up-to-date catalogue.
+    """
+    changed: dict[str, int] = {}
+    tables = [t for t in DIMENSION_TABLES if columns(con, t)]
+    con.execute("BEGIN TRANSACTION")
+    try:
+        for table in tables:
+            for old, new in RENAMED_DIMENSIONS.items():
+                (n,) = con.execute(
+                    f"SELECT count(*) FROM {table} WHERE dimension = ?", [old]
+                ).fetchone()  # type: ignore[misc]
+                if n:
+                    con.execute(
+                        f"UPDATE {table} SET dimension = ? WHERE dimension = ?",
+                        [new, old],
+                    )
+                changed[f"{table}.{old}"] = n
+        con.execute("COMMIT")
+    except BaseException:
+        con.execute("ROLLBACK")
+        raise
+    return changed

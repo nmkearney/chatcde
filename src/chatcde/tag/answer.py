@@ -7,7 +7,7 @@ lets the model write codes that exist (decision 0028):
 * ``term`` is a ``Literal`` of the live codes of that dimension, read with
   :func:`chatcde.tools.vocabulary.dimension_entries`, so groups and retired codes
   are never offered. Countries come from ``vocab/m49.csv`` plus the
-  global/multi-country flag; SDGs are "1"–"17"; output type is the audience list.
+  global/multi-country flag; SDGs are "1"–"17"; audience type is the audience list.
 * Curated dimensions (method, setting, actors, …) also allow ``"other"``, with a
   short ``other_label``, so gaps in the vocabulary show up for its next version.
 * ``strength`` (explicit / inferred / weak) is mapped to a confidence in code

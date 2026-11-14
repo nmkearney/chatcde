@@ -121,7 +121,7 @@ def test_known_codes_pass(vocab: dict, world: WorldCodes):
             regions=["CDE-EAF", "Eastern Africa", "cde_partner_country"],
             settings=["SET-mountains"],
             sdgs=[15],
-            output_types=["Policy"],
+            audience_types=["Policy"],
         ),
         vocab,
         world,

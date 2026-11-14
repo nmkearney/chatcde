@@ -275,7 +275,7 @@ def test_dimension_entries_shapes():
                 "CDE-MSEA": {"label": "SE Asia", "countries": ["LAO", "MMR"]},
             }
         },
-        "output_type": {"boris_type": "from metadata", "audience": ["Academic"]},
+        "audience_type": {"boris_type": "from metadata", "audience": ["Academic"]},
     }
     E = Entry
     assert dimension_entries(vocab, Dimension.SETTING) == [
@@ -300,7 +300,7 @@ def test_dimension_entries_shapes():
     assert [e.code for e in regions] == ["CDE-EAF", "CDE-MSEA"]
     assert "014" in (regions[0].definition or "")
     assert "LAO, MMR" in (regions[1].definition or "")
-    assert [e.code for e in dimension_entries(vocab, Dimension.OUTPUT_TYPE)] == [
+    assert [e.code for e in dimension_entries(vocab, Dimension.AUDIENCE_TYPE)] == [
         "Academic"
     ]
     sdgs = dimension_entries(vocab, Dimension.SDG)

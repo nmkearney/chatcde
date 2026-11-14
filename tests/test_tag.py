@@ -192,7 +192,7 @@ def test_batch_model_offers_only_live_codes(
         ],
         "justice_lens": [],
         "sdg": [{"term": "15", "evidence": "q", "strength": "explicit"}],
-        "output_type": [],
+        "audience_type": [],
     }
     model.model_validate(ok)
     for bad in (
