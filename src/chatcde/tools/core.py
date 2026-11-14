@@ -140,7 +140,8 @@ def count_by(
     level was used.
 
     Counts records, not tags: a record with two methods counts under both.
-    Only tags with confidence at least ``filters.min_confidence`` count. With
+    Only tags with confidence at least ``filters.min_confidence`` count (unset:
+    the configured default, explicit and inferred tags). With
     two dimensions, cells and totals count only records tagged on both;
     combinations that never occur are left out (their count is 0). Every cell
     lists the BORIS IDs behind it. All publication types count; use

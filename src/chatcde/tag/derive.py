@@ -213,12 +213,13 @@ def unit_agreement(
     derived: list[Tag],
     vocab: dict[str, Any],
     tagged: set[str],
-    min_confidence: float = 0.5,
+    min_confidence: float,
 ) -> tuple[int, int]:
     """(tagged records with a mapped CDE unit, those whose areas include it).
 
     Only records in ``tagged`` (those the run tagged) are counted, and only derived
-    impact areas at ``min_confidence`` or more, as in the tools.
+    impact areas at ``min_confidence`` or more (``tools.min_confidence``, as in
+    the tools).
     """
     codes = unit_codes(vocab)
     areas: dict[str, set[str]] = defaultdict(set)
@@ -265,7 +266,9 @@ def publish(
             derived_provenance(vocab),
         )
     catalogue.replace_tables(con, {"tags": [*llm, *derived, *none]})
-    with_unit, agrees = unit_agreement(con, derived, vocab, {t.record_id for t in llm})
+    with_unit, agrees = unit_agreement(
+        con, derived, vocab, {t.record_id for t in llm}, cfg.tools.min_confidence
+    )
     summary = PublishSummary(
         run=run,
         records_tagged=len({t.record_id for t in llm}),

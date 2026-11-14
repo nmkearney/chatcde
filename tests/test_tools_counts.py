@@ -147,6 +147,29 @@ def test_low_confidence_tags_do_not_count(con):
     assert "a01" in y.record_ids
 
 
+def test_threshold_comes_from_config_unless_the_call_sets_one(
+    toy_db: Path, tmp_path: Path
+):
+    """Decision 0038: an unset min_confidence is tools.min_confidence."""
+
+    def has_a01_y(m) -> bool:
+        return any(c.row == "y" and "a01" in c.record_ids for c in m.cells)
+
+    ctx = ToolContext(config(tmp_path, toy_db))
+    assert ctx.expand(None).min_confidence == 0.5
+    with use_context(ctx):
+        assert not has_a01_y(core.count_by(ME, level="term"))
+        assert has_a01_y(core.count_by(ME, filters=Filters(min_confidence=0.2)))
+    lenient = ToolContext(config(tmp_path, toy_db, "tools:\n  min_confidence: 0.2\n"))
+    assert lenient.min_confidence(Filters()) == 0.2
+    assert lenient.min_confidence(Filters(min_confidence=0.9)) == 0.9
+    assert lenient.expand(Filters(year_from=2000)).min_confidence == 0.2
+    with use_context(lenient):
+        assert has_a01_y(core.count_by(ME, filters=Filters(), level="term"))
+        # Setting the schema default explicitly still overrides the config.
+        assert not has_a01_y(core.count_by(ME, filters=Filters(min_confidence=0.5)))
+
+
 def test_filters_narrow_the_denominator(con):
     m = count_matrix(con, IA, filters=Filters(year_from=2000))
     assert m.total_records == 23 and m.row_totals["B"] == 10

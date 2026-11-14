@@ -104,12 +104,28 @@ class ToolContext:
                     log.warning("no %s: country and region filters not checked", path)
             return self._world
 
-    def expand(self, filters: Filters | None) -> Filters | None:
-        """Check the codes in ``filters``, then replace group codes by their terms.
+    def min_confidence(self, filters: Filters | None) -> float:
+        """The confidence threshold a call uses: its own, else ``tools.min_confidence``.
 
-        Every tool resolves its filters here, so an unknown code fails in one
-        place for all of them (decision 0034); group codes stand for their terms
-        (decision 0030). The vocabulary is read only if a tag filter is set.
+        A threshold counts as the call's own only if it was set explicitly
+        (``Filters(min_confidence=0.9)``); the schema default does not (decision 0038).
+        """
+        if filters is not None and "min_confidence" in filters.model_fields_set:
+            return filters.min_confidence
+        return self.cfg.tools.min_confidence
+
+    def expand(self, filters: Filters | None) -> Filters:
+        """Resolve ``filters`` for a tool call: threshold, codes, group codes.
+
+        Every tool resolves its filters here, so the rules hold in one place for
+        all of them:
+
+        * an unset ``min_confidence`` becomes ``tools.min_confidence`` from the
+          config (decision 0038); ``None`` becomes filters with only that threshold;
+        * an unknown code fails (decision 0034);
+        * group codes stand for their terms (decision 0030).
+
+        The vocabulary is read only if a tag filter is set.
 
         Raises:
             ToolError: A tag filter names a code its dimension does not have.
@@ -117,7 +133,11 @@ class ToolContext:
         from chatcde.store.filters import TAG_FIELDS
         from chatcde.tools.vocabulary import check_filter_codes, expand_filters
 
-        if filters is None or not any(getattr(filters, f) for f in TAG_FIELDS):
+        threshold = self.min_confidence(filters)
+        filters = (filters or Filters()).model_copy(
+            update={"min_confidence": threshold}
+        )
+        if not any(getattr(filters, f) for f in TAG_FIELDS):
             return filters
         vocab = self.vocabulary()
         check_filter_codes(filters, vocab, self.world())

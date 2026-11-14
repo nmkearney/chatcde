@@ -304,7 +304,13 @@ class Filters(BaseModel):
     justice_lenses: list[str] = _codes("['JUS-gender']")
     sdgs: list[int] = Field(default_factory=list)
     output_types: list[str] = _codes("['Policy'] (Academic, Policy, Practitioner, Public)")
-    min_confidence: float = Field(default=0.5, ge=0.0, le=1.0)
+    min_confidence: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Lowest tag confidence counted. Leave unset for the configured "
+        "default (explicit and inferred tags count; weak ones do not)",
+    )
 
 
 class Citation(BaseModel):

@@ -7,7 +7,8 @@ Counting rules:
 
 * A **record** is counted, not a tag: a record with three methods counts once
   under each, so row totals can add up to more than the number of records.
-* Only tags with ``confidence >= filters.min_confidence`` count (0.5 by default).
+* Only tags with ``confidence >= filters.min_confidence`` count; unset, the
+  threshold is ``tools.min_confidence`` from the config (decision 0038).
 * ``total_records`` is the number of records matching the filters, tagged or not.
 * **One dimension:** ``untagged_records`` is the number of matching records with
   no tag on it.
@@ -303,8 +304,8 @@ def list_vocabulary(
     with any of its terms (once per record). A dimension without groups is
     listed by term.
 
-    ``record_count`` counts records with a tag of at least the default
-    ``Filters.min_confidence`` (0.5), over all records and types.
+    ``record_count`` counts records with a tag of at least ``tools.min_confidence``
+    (decision 0038), over all records and types.
 
     Raises:
         ToolError: An unknown level, or a missing or invalid vocabulary file.
@@ -323,7 +324,7 @@ def list_vocabulary(
                 con.execute(
                     "SELECT term, count(DISTINCT record_id) FROM tags "
                     "WHERE dimension = ? AND confidence >= ? GROUP BY term",
-                    [dimension.value, Filters().min_confidence],
+                    [dimension.value, ctx.cfg.tools.min_confidence],
                 ).fetchall()
             )
     terms = [
@@ -377,7 +378,7 @@ def _group_terms(
             rows = con.execute(
                 "SELECT DISTINCT record_id, term FROM tags "
                 "WHERE dimension = ? AND confidence >= ?",
-                [dimension.value, Filters().min_confidence],
+                [dimension.value, ctx.cfg.tools.min_confidence],
             ).fetchall()
             for rid, term in rows:
                 tagged.setdefault(rid, set()).add(mapping.get(term, term))
@@ -544,7 +545,7 @@ def dimension_overview(ctx: ToolContext) -> tuple[list[DimensionSummary], int]:
                 con.execute(
                     "SELECT dimension, count(DISTINCT record_id) FROM tags "
                     "WHERE confidence >= ? GROUP BY dimension",
-                    [Filters().min_confidence],
+                    [ctx.cfg.tools.min_confidence],
                 ).fetchall()
             )
     out = [

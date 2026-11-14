@@ -215,7 +215,9 @@ agent's tools reject unknown filter fields the same way. See
 `docs/decisions/0034-filters-every-dimension.md`.
 
 Counts are of records, not tags: a record with two methods counts under both. Only tags
-with confidence of at least `--min-confidence` (0.5) count. Every result states its
+with confidence of at least `--min-confidence` count; the default, `tools.min_confidence`
+in the config (0.5), counts explicit and inferred tags but not weak ones (decision 0038).
+Every result states its
 denominator: the number of matching records and how many of them have no tag. With two
 dimensions, the matrix counts only records tagged on both.
 

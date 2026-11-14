@@ -230,8 +230,13 @@ def gaps(
     ] = None,
     tag: TagOption = None,
     min_confidence: Annotated[
-        float, typer.Option(min=0.0, max=1.0, help="Lowest tag confidence counted.")
-    ] = 0.5,
+        float | None,
+        typer.Option(
+            min=0.0,
+            max=1.0,
+            help="Lowest tag confidence counted [default: tools.min_confidence].",
+        ),
+    ] = None,
     max_ratio: Annotated[
         float | None,
         typer.Option(

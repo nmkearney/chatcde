@@ -110,8 +110,13 @@ def search(
     ] = None,
     tag: TagOption = None,
     min_confidence: Annotated[
-        float, typer.Option(min=0.0, max=1.0, help="Lowest tag confidence counted.")
-    ] = 0.5,
+        float | None,
+        typer.Option(
+            min=0.0,
+            max=1.0,
+            help="Lowest tag confidence counted [default: tools.min_confidence].",
+        ),
+    ] = None,
     full: Annotated[
         bool, typer.Option("--full", help="Print whole passages, not snippets.")
     ] = False,
@@ -307,8 +312,13 @@ def count(
     ] = None,
     tag: TagOption = None,
     min_confidence: Annotated[
-        float, typer.Option(min=0.0, max=1.0, help="Lowest tag confidence counted.")
-    ] = 0.5,
+        float | None,
+        typer.Option(
+            min=0.0,
+            max=1.0,
+            help="Lowest tag confidence counted [default: tools.min_confidence].",
+        ),
+    ] = None,
     show_ids: Annotated[
         bool, typer.Option("--ids", help="List every record ID, not only a few.")
     ] = False,
@@ -366,7 +376,8 @@ def count(
         base = m.total_records - m.untagged_records
         typer.echo(
             f"{m.total_records} matching records; {base} tagged on both "
-            f"{row.value} and {col.value} (confidence >= {filters.min_confidence})."
+            f"{row.value} and {col.value} "
+            f"(confidence >= {get_context().min_confidence(filters)})."
         )
         typer.echo(_levels_line(m))
         if b.excluded_types:
@@ -406,7 +417,7 @@ def count(
     dims = row.value if col is None else f"{row.value} or {col.value}"
     typer.echo(
         f"{m.total_records} matching records; {m.untagged_records} have no tag on "
-        f"{dims} (confidence >= {filters.min_confidence})."
+        f"{dims} (confidence >= {get_context().min_confidence(filters)})."
     )
     typer.echo(_levels_line(m))
     base = m.total_records - m.untagged_records
