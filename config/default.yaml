@@ -134,13 +134,13 @@ vocab_extract:
 # lists in vocab.file, in batches of dimensions; region and impact_area are
 # derived in code when the run is published to the `tags` table.
 tagging:
-  prompt: "tag.v5"               # file <prompts.dir>/<name>.md; v5: every substantial term (0031)
+  prompt: "tag.v6"               # file <prompts.dir>/<name>.md; v6 = v5 with audience_type (0040)
   run: "main"                    # run name in tag_runs; `main` is published to tags
   batches:                       # one request per record and batch
     strategy: [sub_area, additional_sub_area, objective, pathway, research_mode,
                transformative_aspiration]
     how_where: [method, data_type, setting, scale, country]
-    who_what: [system, actors, justice_lens, sdg, output_type]
+    who_what: [system, actors, justice_lens, sdg, audience_type]
   max_per_dimension:             # most tags kept per record and dimension
     default: 4
     method: 5

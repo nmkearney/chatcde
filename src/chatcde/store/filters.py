@@ -52,7 +52,7 @@ TAG_FIELDS: dict[str, Dimension] = {
     "actors": Dimension.ACTORS,
     "justice_lenses": Dimension.JUSTICE_LENS,
     "sdgs": Dimension.SDG,
-    "output_types": Dimension.OUTPUT_TYPE,
+    "audience_types": Dimension.AUDIENCE_TYPE,
 }
 
 

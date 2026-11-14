@@ -126,6 +126,39 @@ def config_path(ctx: typer.Context) -> None:
         typer.echo(str(path))
 
 
+# --- chatcde migrate ---------------------------------------------------------
+
+
+@app.command("migrate", rich_help_panel=PANEL_SETUP)
+def migrate_cmd(ctx: typer.Context) -> None:
+    """Update the catalogue's stored rows to the current schema (safe to rerun).
+
+    Renames dimensions that were renamed after tags were stored, e.g.
+    output_type -> audience_type (decision 0040), in the published tags and in
+    every tagging run. Back up data/catalogue.duckdb first if you want to keep
+    the old names.
+    """
+    from chatcde import catalogue
+
+    cfg = ctx.obj
+    path = cfg.data.catalogue
+    if not path.is_file():
+        typer.echo(f"No catalogue at {path}; nothing to migrate.", err=True)
+        raise typer.Exit(code=1)
+    con = catalogue.connect(path)
+    try:
+        changed = catalogue.migrate(con)
+    finally:
+        con.close()
+    for key, n in changed.items():
+        table, old = key.split(".", 1)
+        new = catalogue.RENAMED_DIMENSIONS[old]
+        typer.echo(f"{table}: {n} rows {old} -> {new}")
+        log.info("migrate %s: %d rows %s -> %s", table, n, old, new)
+    if not any(changed.values()):
+        typer.echo("Catalogue is up to date.")
+
+
 # --- Assembly ------------------------------------------------------------------
 
 vocab_app = typer.Typer(help="List vocabulary terms, or draft new ones.")

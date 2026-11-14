@@ -15,7 +15,7 @@
 * standards: ``country`` (ISO 3166-1 alpha-3 plus a flag term), ``sdg`` (UN goals
   1-17, labelled here), ``region`` (CDE partner regions; UN M49 sub-regions are
   derived from countries and are listed as they occur in the tags), and
-  ``output_type`` (its ``audience`` list).
+  ``audience_type`` (its ``audience`` list).
 
 The codes are what the ``tags`` table stores in ``term``. This module is for
 listing and counting; the tagging stage has its own reader (``chatcde.tag``).
@@ -172,7 +172,7 @@ def dimension_entries(vocab: dict[str, Any], dimension: Dimension) -> list[Entry
         return _regions(node)
     if isinstance(node, dict) and "terms" in node:
         return _curated(node)
-    if dimension is Dimension.OUTPUT_TYPE and isinstance(node, dict):
+    if dimension is Dimension.AUDIENCE_TYPE and isinstance(node, dict):
         return _from_list(node.get("audience") or [])
     if dimension is Dimension.ACTORS and isinstance(node, dict):
         return _from_groups(node.get("groups") or {})

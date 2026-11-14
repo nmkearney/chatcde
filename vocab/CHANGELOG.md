@@ -4,6 +4,12 @@ Changes to `draft_vocabulary.yaml`, newest first. Each entry gives the version, 
 what changed and why. Version numbers follow `version:` in the YAML and `vocab.version`
 in `config/default.yaml`.
 
+## 0.4, dimension renamed (2026-11-14)
+
+- **output_type → audience_type** (#60, decision 0040): only the top-level key changes;
+  the four audiences and the version stay. The note that the publication type comes from
+  BORIS stays in the block (`boris_type`). Stored tags are renamed with `chatcde migrate`.
+
 ## 0.4 (2026-11-09)
 
 Changes after the hand check of pilot 2 (20 records, 415 tags; decision 0029), decided in

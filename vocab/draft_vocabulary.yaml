@@ -2818,6 +2818,6 @@ justice_lens:
 
 sdg: {standard: UN SDGs 1-17, max_per_record: 5}  # raised from 3 (decision 0031)
 
-output_type:
+audience_type:
   boris_type: from metadata (dc.type)
   audience: [Academic, Policy, Practitioner, Public]  # proposed
