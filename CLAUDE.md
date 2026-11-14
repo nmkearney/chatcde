@@ -185,7 +185,7 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
 - tag.v5 (every substantial term, SDG cap 5; decision 0031), vocab 0.4, qwen3.8-27b.
   **9,009 of 9,009 batches ok** (3,003 records x 3 batches). 4 `how_where` batches first
   failed on sports codes (`LIT`, `KOS`, `MOR`, …); since #70 country codes are normalised in
-  code (`tagging.country_aliases`, decision 0037) and the 4 were rerun on 2026-11-14.
+  code (`tagging.country_aliases`, decision 0039) and the 4 were rerun on 2026-11-14.
 - Published to `tags`: 68,912 model tags plus 10,381 derived region/impact_area/none rows
   (79,293 in all, on 3,000 records).
 - Pilot runs kept in `tag_state`: pilot_v1–v3, pilot_v5, alt (gpt-oss-120b recall check).
