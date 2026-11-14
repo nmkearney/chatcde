@@ -334,6 +334,7 @@ class TaggingConfig(_Section):
     max_consecutive_failures: int = Field(ge=1)
     includes_shown: int = Field(ge=0)
     m49_file: ProjectPath
+    country_aliases: dict[str, str] = Field(default_factory=dict)
     pilot: TaggingPilotConfig
     review: TaggingReviewConfig
     extra_body: dict[str, Any] = Field(default_factory=dict)
