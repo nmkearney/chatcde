@@ -1,4 +1,4 @@
-# 0037: Country codes are normalised in code; unknown ones are dropped
+# 0039: Country codes are normalised in code; unknown ones are dropped
 
 - Status: accepted
 - Date: 2026-11-14
