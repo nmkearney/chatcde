@@ -191,6 +191,8 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
 - Pilot runs kept in `tag_state`: pilot_v1–v3, pilot_v5, alt (gpt-oss-120b recall check).
 - Expect precision ~89% and recall <= ~79% at tag.v3 (decision 0029); v5 trades a little
   precision for recall. A systematic evaluation is #16.
+- Counts keep explicit (0.9) and inferred (0.6) tags: `tools.min_confidence: 0.5` (decision
+  0038). At tag.v5, inferred tags are 77% ok, 3% wrong; explicit-only would halve sub_area coverage.
 
 ## Index and export (`chatcde index`, `chatcde export`, 2026-11-10)
 

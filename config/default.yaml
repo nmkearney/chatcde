@@ -204,6 +204,8 @@ embedding:
 tools:
   max_k: 20                      # most passages one search_publications call returns
   max_section_pages: 10          # widest page range one read_section call returns
+  min_confidence: 0.5            # lowest tag confidence counted when a call sets none:
+                                 # explicit (0.9) and inferred (0.6) tags count (decision 0038)
 
 # --- Gap analysis (decisions 0018 and 0021) --------------------------------
 gaps:

@@ -389,10 +389,15 @@ class EmbeddingConfig(_Section):
 
 
 class ToolsConfig(_Section):
-    """Limits on what one tool call returns (decision 0020)."""
+    """Limits on what one tool call returns, and the default confidence threshold.
+
+    Limits: decision 0020. ``min_confidence`` applies to tag filters and counts
+    whenever a call sets none (decision 0038).
+    """
 
     max_k: int = Field(ge=1)
     max_section_pages: int = Field(ge=1)
+    min_confidence: float = Field(ge=0.0, le=1.0)
 
 
 class GapsConfig(_Section):
