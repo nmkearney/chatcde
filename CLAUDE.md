@@ -183,11 +183,11 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
 ## Tagging results (`chatcde tag --all`, run `main`, 2026-11-10)
 
 - tag.v5 (every substantial term, SDG cap 5; decision 0031), vocab 0.4, qwen3.8-27b.
-  **9,005 of 9,009 batches ok** (3,003 records x 3 batches); 4 `how_where` batches fail
-  because the model writes country codes outside ISO alpha-3 (records 96e0d3ed, 08a38880,
-  7c70fb4e, dc7e1ef8); rerun them with `chatcde tag --all` later.
-- Published to `tags`: 68,851 model tags on 2,999 records (62,793 at confidence >= 0.6)
-  plus 10,354 derived region/impact_area rows; 3 records have no tags.
+  **9,009 of 9,009 batches ok** (3,003 records x 3 batches). 4 `how_where` batches first
+  failed on sports codes (`LIT`, `KOS`, `MOR`, …); since #70 country codes are normalised in
+  code (`tagging.country_aliases`, decision 0037) and the 4 were rerun on 2026-11-14.
+- Published to `tags`: 68,912 model tags plus 10,381 derived region/impact_area/none rows
+  (79,293 in all, on 3,000 records).
 - Pilot runs kept in `tag_state`: pilot_v1–v3, pilot_v5, alt (gpt-oss-120b recall check).
 - Expect precision ~89% and recall <= ~79% at tag.v3 (decision 0029); v5 trades a little
   precision for recall. A systematic evaluation is #16.
