@@ -84,11 +84,26 @@ def test_run_tool_reports_an_unknown_filter_key_to_the_model(cfg: Config):
     with use_context(ToolContext(cfg)):
         out = run_tool(
             tool_specs(["count_by"])["count_by"],
-            {"row": "method", "filters": {"impact_area": ["SG"]}},
+            {"row": "method", "filters": {"impact_zone": ["SG"]}},
             max_chars=500,
         )
     assert not out.ok
-    assert "filters.impact_area" in (out.error or "")
+    assert "filters.impact_zone" in (out.error or "")
+
+
+def test_a_repaired_filter_key_is_applied_never_dropped(cfg: Config):
+    """Decision 0041: ``impact_area`` is read as ``impact_areas``, with a note."""
+    spec = tool_specs(["count_by"])["count_by"]
+    with use_context(ToolContext(cfg)):
+        right = run_tool(
+            spec, {"row": "method", "filters": {"impact_areas": ["SL"]}}, max_chars=9999
+        )
+        repaired = run_tool(
+            spec, {"row": "method", "filters": {"impact_area": "SL"}}, max_chars=9999
+        )
+    assert right.ok and repaired.ok
+    assert repaired.data["total_records"] == right.data["total_records"]
+    assert repaired.content.startswith("[Note: filters.impact_area read as")
 
 
 # --- new filters reach the counts --------------------------------------------------

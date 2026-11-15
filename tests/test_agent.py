@@ -637,7 +637,7 @@ def test_run_tool_accepts_filters_sent_as_json_text():
 
 
 def test_misspelt_fields_get_a_suggestion():
-    """#67: gpt-oss writes filters.impact_area for impact_areas."""
+    """#67: a misspelt key that cannot be repaired gets a suggestion."""
 
     def tool(filters: Filters | None = None, k: int = 3) -> dict:
         """Echo.
@@ -649,7 +649,65 @@ def test_misspelt_fields_get_a_suggestion():
         return {}
 
     spec = _spec_of(tool)
-    out = run_tool(spec, {"filters": {"impact_area": ["SG"]}, "kk": 2}, max_chars=500)
-    assert "filters.impact_area" in (out.error or "")
+    out = run_tool(spec, {"filters": {"impact_aras": ["SG"]}, "kk": 2}, max_chars=500)
+    assert "filters.impact_aras" in (out.error or "")
     assert "did you mean 'impact_areas'?" in (out.error or "")
     assert "did you mean 'k'?" not in (out.error or "")  # too short to guess
+    other = run_tool(spec, {"filters": {"colour": "red"}}, max_chars=500)
+    assert "valid filter keys: year_from, year_to" in (other.error or "")
+    one = run_tool(spec, {"filters": {"record_id": "abc"}}, max_chars=500)
+    assert "use get_publication or read_section" in (one.error or "")
+
+
+def _echo_filters_spec():
+    def tool(filters: Filters | None = None) -> dict:
+        """Echo the filters.
+
+        Args:
+            filters: Restrictions.
+        """
+        return (filters or Filters()).model_dump(exclude_defaults=True)
+
+    return _spec_of(tool)
+
+
+@pytest.mark.parametrize(
+    ("written", "read", "note"),
+    [
+        # gpt-oss, baseline 2026-11-15 (decision 0041).
+        ({"impact_area": ["SG"]}, {"impact_areas": ["SG"]}, "impact_area read as"),
+        ({"country": "LAO"}, {"countries": ["LAO"]}, "country read as countries"),
+        ({"sdg": 8}, {"sdgs": [8]}, "read as a list"),
+        ({"justice_lens": ["JUS-gender"]}, {"justice_lenses": ["JUS-gender"]}, "lens"),
+        ({"year": {"gte": 2020}}, {"year_from": 2020}, "year_from=2020"),
+        ({"year": 2020}, {"year_from": 2020, "year_to": 2020}, "year_to=2020"),
+        ({"years": [2020, 2021, 2022]}, {"year_from": 2020, "year_to": 2022}, ""),
+        ({"year_range": [2015, 2020]}, {"year_from": 2015, "year_to": 2020}, ""),
+        (
+            {"pub_year": {"min": "2018", "max": 2020}},
+            {"year_from": 2018, "year_to": 2020},
+            "",
+        ),
+        ({"year": {"gt": 2019, "lt": 2025}}, {"year_from": 2020, "year_to": 2024}, ""),
+    ],
+)
+def test_unambiguous_filter_spellings_are_repaired(written, read, note):
+    out = run_tool(_echo_filters_spec(), {"filters": written}, max_chars=2000)
+    assert out.ok, out.error
+    assert {k: v for k, v in out.data.items() if k != "min_confidence"} == read
+    assert out.content.startswith("[Note: filters.") and note in out.content
+    assert out.arguments["filters"] == read
+
+
+@pytest.mark.parametrize(
+    "written",
+    [
+        {"years": [2018, 2020, 2024]},  # not a range
+        {"year": {"around": 2020}},
+        {"year": 2020, "year_from": 2019},  # both given: which one?
+        {"impact_area": ["SG"], "impact_areas": ["JE"]},
+    ],
+)
+def test_ambiguous_filter_spellings_stay_errors(written):
+    out = run_tool(_echo_filters_spec(), {"filters": written}, max_chars=2000)
+    assert not out.ok and "Extra inputs are not permitted" in (out.error or "")
