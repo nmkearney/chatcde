@@ -178,6 +178,59 @@ def test_filters_narrow_the_denominator(con):
     assert (empty.total_records, empty.cells, empty.untagged_records) == (0, [], 0)
 
 
+def test_a_filtered_dimension_limits_its_own_rows(tmp_path: Path):
+    """#83: a filter on the row (or column) dimension keeps only its terms."""
+    db = tmp_path / "mixed.duckdb"
+    c = catalogue.connect(db)
+    catalogue.ensure_tables(c, ["records", "tags"])
+    catalogue.insert(c, "records", [rec("r1"), rec("r2"), rec("r3")])
+    catalogue.insert(
+        c,
+        "tags",
+        [tag("r1", IA, "A"), tag("r1", IA, "B"), tag("r1", ME, "x")]
+        + [tag("r2", IA, "A"), tag("r2", ME, "y"), tag("r3", IA, "B")]
+        + [tag("r3", ME, "x")],
+    )
+    everything = count_matrix(c, IA, ME)
+    rows = count_matrix(c, IA, ME, Filters(impact_areas=["a"]))  # case ignored
+    cols = count_matrix(c, IA, ME, Filters(methods=["x"]))
+    c.close()
+    assert everything.row_totals == {"B": 2, "A": 2}
+    # r1 also carries B, which is no longer a row; A's counts are unchanged.
+    assert rows.row_totals == {"A": 2} and rows.total_records == 2
+    assert {(x.row, x.col, x.count) for x in rows.cells} == {
+        ("A", "x", 1),
+        ("A", "y", 1),
+    }
+    assert cols.col_totals == {"x": 2} and set(cols.row_totals) == {"A", "B"}
+
+
+def test_filtered_rows_on_the_fixtures(fixture_ctx):
+    """Term and group level, and sub-areas limiting impact areas to their parents."""
+    sub = Dimension.SUB_AREA
+    full = core.count_by(sub).row_totals
+    two = core.count_by(sub, filters=Filters(sub_areas=["TE-d", "TE-c"])).row_totals
+    assert two == {k: full[k] for k in ("TE-d", "TE-c")}
+    group = core.count_by(ME, filters=Filters(methods=["MET-case-study"]))
+    groups = {t.code: t.group for t in core.list_vocabulary(ME)}
+    assert set(group.row_totals) == {groups["MET-case-study"]}
+    whole = core.count_by(ME, filters=Filters(methods=[groups["MET-case-study"]]))
+    assert set(whole.row_totals) == {groups["MET-case-study"]}
+    parents = core.count_by(IA, filters=Filters(sub_areas=["TE-d", "SL-a"]))
+    assert set(parents.row_totals) <= {"TE", "SL"}
+
+
+def test_find_gaps_refuses_to_compare_an_area_with_itself(fixture_ctx):
+    """Decision 0042: a filter leaving one row (or column) is an error."""
+    sub = Dimension.SUB_AREA
+    with pytest.raises(ToolError, match="compared only with itself"):
+        core.find_gaps(sub, ME, Filters(sub_areas=["TE-d"]))
+    with pytest.raises(ToolError, match="Drop the impact_area filter"):
+        core.find_gaps(Dimension.REGION, IA, Filters(impact_areas=["SG"]))
+    # Several sub-areas are compared with each other.
+    core.find_gaps(sub, ME, Filters(sub_areas=["TE-a", "TE-c", "TE-d", "SL-a"]))
+
+
 def test_same_dimension_twice_gives_co_occurrence(con):
     m = count_matrix(con, IA, IA)
     assert {(c.row, c.col) for c in m.cells} == {("A", "A"), ("B", "B")}

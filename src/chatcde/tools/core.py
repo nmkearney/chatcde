@@ -143,9 +143,12 @@ def count_by(
     Only tags with confidence at least ``filters.min_confidence`` count (unset:
     the configured default, explicit and inferred tags). With
     two dimensions, cells and totals count only records tagged on both;
-    combinations that never occur are left out (their count is 0). Every cell
-    lists the BORIS IDs behind it. All publication types count; use
-    ``find_gaps`` for gap analysis.
+    combinations that never occur are left out (their count is 0). A filter on
+    the row or column dimension limits it to the filtered terms (or their
+    groups; a sub-area filter limits impact-area rows to the parent areas):
+    ``row="sub_area"`` with ``filters.sub_areas=["SG-a", "SG-b"]`` gives two rows.
+    Totals count the filtered records. Every cell lists the BORIS IDs behind
+    it. All publication types count; use ``find_gaps`` for gap analysis.
 
     Args:
         row: Dimension for the rows, e.g. ``sub_area``.
@@ -188,8 +191,10 @@ def find_gaps(
 
     To compare one area with the rest of CDE, make its dimension the ``row``
     and do not filter by it (e.g. ``row="impact_area"`` and read the SG cells):
-    a filter on the area leaves nothing to compare it with. An empty list means
-    no cell is at or below ``max_ratio``.
+    a filter that leaves one row or column is an error, since the area would be
+    compared only with itself. Filtering a dimension to several terms compares
+    those terms with each other. An empty list means no cell is at or below
+    ``max_ratio``.
 
     Args:
         row: First dimension, e.g. ``sub_area``.
