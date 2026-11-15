@@ -59,6 +59,16 @@ At 100 chunks the depth, not the score, set the matches (SLM: all 39 records abo
 At 400 chunks (about 2.5 s), narrow topics level off on the threshold (pastoralism: 38
 records), while broad ones (SLM: 102) reach `max_records`, as the caveats say.
 
+### Evaluation (2026-11-15, `data/eval/71-full.jsonl`)
+All 30 questions, both agent models, 3 runs each (2 qwen answers timed out on the VPN
+and were rerun):
+- gpt-oss-120b **86/90 (96%)**, qwen3.8-27b **90/90 (100%)**; required 0.85.
+- Original 27 questions: gpt-oss 77/81 and qwen 81/81 (M1: 78/81 each). The gpt-oss
+  misses are flaky, not tool choice: a count of 191 instead of 165 (count-sg-interviews),
+  one Myanmar synthesis citing none of the expected records, and two Myanmar answers
+  that wrote "oil‑palm" with a non-breaking hyphen, which `mentions_any` does not match.
+- No question outside the experts set called `find_expertise`; every expertise answer did.
+
 ## Consequences
 - Rankings for broad topics rest on the best 100 records only. A narrower topic or tag
   filters give exact counts.

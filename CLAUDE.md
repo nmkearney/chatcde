@@ -245,6 +245,8 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
   people, 279 CDE (person-level: CDE on at least one record). No BORIS person ID is stored.
 - Topic match: 400 reranked chunks, best passage >= 0.3, at most 100 records (decision 0046).
 - 3 expertise questions in `tests/questions.yaml` (kind `experts`).
+- Full run, 30 questions x 3 runs: **gpt-oss 86/90, qwen 90/90**; no misrouting to
+  `find_expertise`. `mentions_any` misses non-breaking hyphens ("oil‑palm").
 
 ## Architecture
 
