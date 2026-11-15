@@ -253,12 +253,12 @@ gaps:
 
 # --- Agent (see docs/decisions/0022-agent-loop.md) -------------------------
 agent:
-  system_prompt: "agent_system.v4"   # file <prompts.dir>/<name>.md; v4: gap questions via find_gaps (0037)
+  system_prompt: "agent_system.v5"   # file <prompts.dir>/<name>.md; v5: codes, years, denominators (#5)
   tools: [search_publications, get_publication, read_section, list_vocabulary,
           count_by, find_gaps, coverage_report]
-  max_tool_calls: 12             # per question; then the model must answer
+  max_tool_calls: 16             # per question; then the model must answer (12 cut synthesis, #5)
   temperature: 0.2
-  max_tokens: 4096               # per reply; gpt-oss spends part of it on reasoning
+  max_tokens: 8192               # per reply; reasoning uses part of it (4096 left qwen gap answers empty, #5)
   max_tool_result_chars: 16000   # longer results are cut with a note; counts never (0036)
   max_ids_per_list: 20           # record_ids lists are cut, the count kept
   max_ids_per_count_cell: 0      # IDs per cell from counting tools; 0 = none (0036)

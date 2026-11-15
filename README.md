@@ -375,13 +375,13 @@ vocabulary and code versions. `--log FILE` appends that result as a JSON line.
 
 How the agent works: the tool definitions are generated from the tool functions' type
 hints and docstrings (`chatcde.tools.specs`). The model may make at most
-`agent.max_tool_calls` (12) calls per question; then it has to answer. It cites records
+`agent.max_tool_calls` (16) calls per question; then it has to answer. It cites records
 as `[BORIS:<record_id>]` or `[BORIS:<record_id>, p. 4]`, and each cited ID is checked
 against the catalogue and the conversation's tool results. If the answer cites an ID
 that is not a record (such as a tool name), the model is asked once to rewrite it
 (`agent.citation_retry`); references still unknown are removed and reported
 (`docs/decisions/0035-citations-and-count-queries.md`). The system prompt is
-`src/chatcde/prompts/agent_system.v4.md`. From Python:
+`src/chatcde/prompts/agent_system.v5.md`. From Python:
 
 ```python
 from chatcde.agent import Agent
