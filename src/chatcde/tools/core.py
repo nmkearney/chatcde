@@ -21,6 +21,7 @@ from chatcde.schemas import (
     CountMatrix,
     CoverageReport,
     Dimension,
+    ExpertiseResult,
     Filters,
     GapCell,
     Level,
@@ -244,3 +245,39 @@ def coverage_report(filters: Filters | None = None) -> CoverageReport:
     filters = ctx.expand(filters)  # check codes, group codes -> terms (0030, 0034)
     with ctx.catalogue() as con:
         return coverage.build_report(con, filters, coverage.local_edition(cfg.data.dir))
+
+
+def find_expertise(
+    topic: str = "",
+    filters: Filters | None = None,
+    k: int = 10,
+    cde_only: bool = True,
+) -> ExpertiseResult:
+    """Find the CDE researchers who have worked on a topic, ranked by records.
+
+    Matching records are those that pass ``filters`` (tags, years, units, ...)
+    and, when a ``topic`` is given, that search finds for it within the filters
+    (``experts.max_records`` at most). Without a topic every record that passes
+    the filters matches, so the counts are exact tag counts. Give a topic, filters
+    or both.
+
+    Each person is ranked by the number of matching records they authored, then
+    by the recent ones, then by their latest year. Author spellings are merged by
+    ORCID and name. A person counts as CDE with CDE affiliation on at least one
+    record.
+
+    Args:
+        topic: What to search for, in any language, e.g. "pastoralism". May be
+            empty when filters are given.
+        filters: Optional restrictions, e.g. ``regions: ["CDE-EAF"]``,
+            ``actors: ["ACT-pastoralists"]``. Group codes stand for their terms.
+        k: Number of people to return (capped by `experts.max_k`, 25 by default).
+        cde_only: Only CDE-affiliated people (default); false also lists
+            external co-authors.
+
+    Returns:
+        People best first, each with counts, years, units, ORCID where known
+        and the BORIS IDs of their matching records; ``matched_records`` is the
+        denominator.
+    """
+    raise NotImplementedError("find_expertise is built in #71")
