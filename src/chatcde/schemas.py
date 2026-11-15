@@ -397,6 +397,56 @@ class GapCell(CountCell):
     ratio: float = Field(description="count / expected")
 
 
+class Expert(BaseModel):
+    """One person from ``find_expertise``, with the records behind their rank.
+
+    A person is one or more author spellings merged by ORCID or name
+    (decision 0046). ``is_cde`` is person-level: CDE affiliation on at least
+    one record in the catalogue.
+    """
+
+    name: str = Field(description="Most frequent spelling, 'Surname, Given'")
+    variants: list[str] = Field(
+        default_factory=list, description="Other spellings merged into this person"
+    )
+    orcid: str | None = None
+    is_cde: bool = Field(description="CDE affiliation on at least one record")
+    cde_units: list[str] = Field(
+        default_factory=list, description="CDE units recorded for this person"
+    )
+    record_count: int = Field(description="Matching records this person authored")
+    first_author_count: int = Field(description="Of those, as first author")
+    recent_count: int = Field(
+        description="Of those, from the last `experts.recent_years` years"
+    )
+    first_year: int | None = None
+    last_year: int | None = None
+    total_records: int = Field(
+        description="All of this person's records in the catalogue"
+    )
+    record_ids: list[str] = Field(
+        description="The matching records, best match first (never cut)"
+    )
+
+
+class ExpertiseResult(BaseModel):
+    """Result of ``find_expertise``: people ranked by matching records."""
+
+    topic: str | None
+    filters: Filters = Field(description="The filters as used, codes expanded")
+    matched_records: int = Field(
+        description="Records matching the topic and filters (the denominator)"
+    )
+    search_records: int = Field(
+        description="Of those, found by search (0 when no topic was given)"
+    )
+    records_without_cde_author: int = Field(
+        description="Matching records with no CDE-affiliated author"
+    )
+    people_found: int = Field(description="People with a matching record, before k")
+    experts: list[Expert]
+
+
 class CoverageReport(BaseModel):
     """How complete the data behind an answer is."""
 
