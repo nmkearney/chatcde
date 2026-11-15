@@ -176,7 +176,7 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
 - Only researchers outside the author team count as co-producers (curator's rule, tag.v4).
 - `JUS-none-explicit` is filled in by code at publish (`tagging.none_terms`), never by the model.
 - Curation workbook gained an `includes` column, curator-added rows and a `strategy_terms` sheet.
-- Rename output_type → audience_type proposed in #60 (`schemas`).
+- output_type renamed audience_type (#60, decision 0040; `chatcde migrate` renames stored tags).
 - v0.4 counts: additional_sub_area 78, data_type 42, system 65 (others as in v0.3); 386 active
   terms across the 14 list dimensions, plus 17 SDGs and 4 audiences.
 
@@ -305,7 +305,7 @@ Full definitions and scope notes are in `docs/schema_draft.md` and `vocab/draft_
 | 15 | actors | curated v0.4: 61 terms in 6 groups, each with a role: studied / co-producer / audience |
 | 16 | justice_lens | strategy-derived, 7 terms |
 | 17 | sdg | UN 17 goals, max 5 (decision 0031) |
-| 18 | output_type | BORIS type + audience |
+| 18 | audience_type | main audience (Academic, Policy, Practitioner, Public); the BORIS type is `Record.pub_type` |
 
 From v0.3, closed-list terms have stable codes (`MET-case-study`, `ASA-food-security`) and
 `Tag.term` stores the code (decision 0026).

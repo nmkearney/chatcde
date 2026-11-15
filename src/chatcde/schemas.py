@@ -99,7 +99,7 @@ class Dimension(str, Enum):
     ACTORS = "actors"
     JUSTICE_LENS = "justice_lens"
     SDG = "sdg"
-    OUTPUT_TYPE = "output_type"
+    AUDIENCE_TYPE = "audience_type"
 
 
 class ActorRole(str, Enum):
@@ -303,7 +303,7 @@ class Filters(BaseModel):
     actors: list[str] = _codes("['ACT-pastoralists']")
     justice_lenses: list[str] = _codes("['JUS-gender']")
     sdgs: list[int] = Field(default_factory=list)
-    output_types: list[str] = _codes("['Policy'] (Academic, Policy, Practitioner, Public)")
+    audience_types: list[str] = _codes("['Policy'] (Academic, Policy, Practitioner, Public)")
     min_confidence: float = Field(
         default=0.5,
         ge=0.0,

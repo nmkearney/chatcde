@@ -119,7 +119,7 @@ that is done.
   `additional_sub_area` tags were drafted by Claude the same day, with verbatim quotes,
   and checked by hand.
 Tags per dimension: method 66, actors 57, sdg 55, sub_area 52, country 52,
-impact_area 44, system 42, justice_lens 39, output_type 33, region 31,
+impact_area 44, system 42, justice_lens 39, audience_type 33, region 31,
 research_mode 29, objective 28, data_type 28, scale 25, additional_sub_area 22,
 pathway 22, setting 19, transformative_aspiration 10.
 

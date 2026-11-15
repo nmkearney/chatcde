@@ -6,7 +6,7 @@ The schema has 18 dimensions (17 in v0.2, plus additional sub-areas in v0.3, dec
 
 ## Schema
 
-All dimensions except output type allow several values per record. Free-text keywords are also kept for search, but they aren't used for gap counts.
+All dimensions allow several values per record. Free-text keywords are also kept for search, but they aren't used for gap counts.
 
 | # | Dimension | What it records | Source of terms | How it's filled |
 | --- | --- | --- | --- | --- |
@@ -26,7 +26,7 @@ All dimensions except output type allow several values per record. Free-text key
 | 14 | Actors | Actor groups, and whether they were studied or engaged as co-producers | Strategy terms plus proposals | LLM, closed list |
 | 15 | Justice lens | Which justice, equity or power dimensions are addressed | Strategy, sections 1.4, 3.1 and 3.3 | LLM, closed list |
 | 16 | SDG | Up to five Sustainable Development Goals (three until decision 0031) | UN, 17 goals | LLM, closed list |
-| 17 | Output type | Publication type and main audience | BORIS type; proposed audiences | Metadata; audience by LLM |
+| 17 | Audience type | Main audience(s): Academic, Policy, Practitioner, Public (renamed from output type, decision 0040) | Proposed audiences | LLM, closed list. The publication type is not a tag: it comes from BORIS (`dc.type`, `Record.pub_type`) |
 | 18 | Transformative aspiration | The stance the work takes towards existing systems: collaborate, challenge or disrupt | Westerink et al. 2026; see decision 0005 | LLM, closed list |
 
 Dimensions 1, 2 and 4–6 use the current strategy's categories for all years. Older work is tagged against categories that didn't exist when it was written, and the BORIS unit is kept as recorded; see decision 0016.

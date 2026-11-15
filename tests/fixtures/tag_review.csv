@@ -14,7 +14,7 @@ record_id,dimension,term,role,confidence,status,note,checked_by,checked_on
 2760e535-c973-4524-ab84-3a1c71b9bf3a,justice_lens,JUS-recognition,,0.85,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 2760e535-c973-4524-ab84-3a1c71b9bf3a,justice_lens,JUS-decolonial,,0.6,ok,Refers to one article in the issue; remapped to v0.3 code,Norman Kearney,06.11.2026
 2760e535-c973-4524-ab84-3a1c71b9bf3a,sdg,15,,0.4,ok,Weak; editorial spans many themes,Norman Kearney,06.11.2026
-2760e535-c973-4524-ab84-3a1c71b9bf3a,output_type,Academic,,0.9,ok,Journal editorial,Norman Kearney,06.11.2026
+2760e535-c973-4524-ab84-3a1c71b9bf3a,audience_type,Academic,,0.9,ok,Journal editorial,Norman Kearney,06.11.2026
 453f1ec7-d260-4d02-a003-6b95d48c26b2,impact_area,SL,,0.85,ok,,Norman Kearney,06.11.2026
 453f1ec7-d260-4d02-a003-6b95d48c26b2,sub_area,SL-a,,0.8,ok,,Norman Kearney,06.11.2026
 453f1ec7-d260-4d02-a003-6b95d48c26b2,sub_area,SL-b,,0.75,ok,Conservation vs livelihoods trade-off,Norman Kearney,06.11.2026
@@ -39,7 +39,7 @@ record_id,dimension,term,role,confidence,status,note,checked_by,checked_on
 453f1ec7-d260-4d02-a003-6b95d48c26b2,sdg,15,,0.8,ok,,Norman Kearney,06.11.2026
 453f1ec7-d260-4d02-a003-6b95d48c26b2,sdg,1,,0.6,ok,,Norman Kearney,06.11.2026
 453f1ec7-d260-4d02-a003-6b95d48c26b2,sdg,2,,0.6,ok,,Norman Kearney,06.11.2026
-453f1ec7-d260-4d02-a003-6b95d48c26b2,output_type,Policy,,0.95,ok,,Norman Kearney,06.11.2026
+453f1ec7-d260-4d02-a003-6b95d48c26b2,audience_type,Policy,,0.95,ok,,Norman Kearney,06.11.2026
 6d56cc27-fd5f-47ec-8187-d298be89be1a,impact_area,SG,,0.9,ok,,Norman Kearney,06.11.2026
 6d56cc27-fd5f-47ec-8187-d298be89be1a,sub_area,SG-a,,0.95,ok,Trade rules,Norman Kearney,06.11.2026
 6d56cc27-fd5f-47ec-8187-d298be89be1a,objective,O4,,0.6,ok,,Norman Kearney,06.11.2026
@@ -59,7 +59,7 @@ record_id,dimension,term,role,confidence,status,note,checked_by,checked_on
 6d56cc27-fd5f-47ec-8187-d298be89be1a,justice_lens,JUS-distributive,,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 6d56cc27-fd5f-47ec-8187-d298be89be1a,sdg,15,,0.9,ok,,Norman Kearney,06.11.2026
 6d56cc27-fd5f-47ec-8187-d298be89be1a,sdg,12,,0.7,ok,,Norman Kearney,06.11.2026
-6d56cc27-fd5f-47ec-8187-d298be89be1a,output_type,Policy,,0.95,ok,,Norman Kearney,06.11.2026
+6d56cc27-fd5f-47ec-8187-d298be89be1a,audience_type,Policy,,0.95,ok,,Norman Kearney,06.11.2026
 71c077c3-13b9-4df1-bd03-cd4eb27c84de,impact_area,SG,,0.85,ok,,Norman Kearney,06.11.2026
 71c077c3-13b9-4df1-bd03-cd4eb27c84de,impact_area,SL,,0.6,ok,,Norman Kearney,06.11.2026
 71c077c3-13b9-4df1-bd03-cd4eb27c84de,sub_area,SG-d,,0.85,ok,,Norman Kearney,06.11.2026
@@ -78,7 +78,7 @@ record_id,dimension,term,role,confidence,status,note,checked_by,checked_on
 71c077c3-13b9-4df1-bd03-cd4eb27c84de,actors,ACT-indigenous-peoples-and-local-communities,studied,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 71c077c3-13b9-4df1-bd03-cd4eb27c84de,justice_lens,JUS-recognition,,0.5,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 71c077c3-13b9-4df1-bd03-cd4eb27c84de,sdg,15,,0.9,ok,,Norman Kearney,06.11.2026
-71c077c3-13b9-4df1-bd03-cd4eb27c84de,output_type,Academic,,0.95,ok,Journal article,Norman Kearney,06.11.2026
+71c077c3-13b9-4df1-bd03-cd4eb27c84de,audience_type,Academic,,0.95,ok,Journal article,Norman Kearney,06.11.2026
 71c3358b-579b-4c24-b627-3b8d7f37e6fd,impact_area,TE,,0.95,ok,,Norman Kearney,06.11.2026
 71c3358b-579b-4c24-b627-3b8d7f37e6fd,sub_area,TE-a,,0.9,ok,,Norman Kearney,06.11.2026
 71c3358b-579b-4c24-b627-3b8d7f37e6fd,sub_area,TE-c,,0.6,ok,,Norman Kearney,06.11.2026
@@ -96,7 +96,7 @@ record_id,dimension,term,role,confidence,status,note,checked_by,checked_on
 71c3358b-579b-4c24-b627-3b8d7f37e6fd,actors,ACT-researchers-and-universities,audience,0.8,ok,Bulletin of the Swiss association of university lecturers; remapped to v0.3 code,Norman Kearney,06.11.2026
 71c3358b-579b-4c24-b627-3b8d7f37e6fd,justice_lens,JUS-power,,0.45,ok,Brookfield: uncover implicit power structures; quote broken by hyphenation; remapped to v0.3 code,Norman Kearney,06.11.2026
 71c3358b-579b-4c24-b627-3b8d7f37e6fd,sdg,4,,0.9,ok,,Norman Kearney,06.11.2026
-71c3358b-579b-4c24-b627-3b8d7f37e6fd,output_type,Academic,,0.7,ok,Could be Practitioner,Norman Kearney,06.11.2026
+71c3358b-579b-4c24-b627-3b8d7f37e6fd,audience_type,Academic,,0.7,ok,Could be Practitioner,Norman Kearney,06.11.2026
 7ab97dd8-2ef4-41d5-ad9f-1049a091013b,impact_area,SL,,0.9,ok,,Norman Kearney,06.11.2026
 7ab97dd8-2ef4-41d5-ad9f-1049a091013b,sub_area,SL-a,,0.9,ok,WOCAT / SLM,Norman Kearney,06.11.2026
 7ab97dd8-2ef4-41d5-ad9f-1049a091013b,sub_area,SL-b,,0.6,ok,,Norman Kearney,06.11.2026
@@ -118,7 +118,7 @@ record_id,dimension,term,role,confidence,status,note,checked_by,checked_on
 7ab97dd8-2ef4-41d5-ad9f-1049a091013b,justice_lens,JUS-none-explicit,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 7ab97dd8-2ef4-41d5-ad9f-1049a091013b,sdg,15,,0.8,ok,,Norman Kearney,06.11.2026
 7ab97dd8-2ef4-41d5-ad9f-1049a091013b,sdg,2,,0.5,ok,,Norman Kearney,06.11.2026
-7ab97dd8-2ef4-41d5-ad9f-1049a091013b,output_type,Academic,,0.9,ok,Conference abstract,Norman Kearney,06.11.2026
+7ab97dd8-2ef4-41d5-ad9f-1049a091013b,audience_type,Academic,,0.9,ok,Conference abstract,Norman Kearney,06.11.2026
 8e47c5f7-3dc8-40d8-a993-34c2fbd62074,impact_area,SG,,0.95,ok,,Norman Kearney,06.11.2026
 8e47c5f7-3dc8-40d8-a993-34c2fbd62074,sub_area,SG-b,,0.95,ok,Certification,Norman Kearney,06.11.2026
 8e47c5f7-3dc8-40d8-a993-34c2fbd62074,sub_area,SL-d,,0.45,ok,Telecoupling is secondary,Norman Kearney,06.11.2026
@@ -137,7 +137,7 @@ record_id,dimension,term,role,confidence,status,note,checked_by,checked_on
 8e47c5f7-3dc8-40d8-a993-34c2fbd62074,justice_lens,JUS-distributive,,0.35,ok,Socio-economic spillovers only; weak; remapped to v0.3 code,Norman Kearney,06.11.2026
 8e47c5f7-3dc8-40d8-a993-34c2fbd62074,sdg,12,,0.85,ok,,Norman Kearney,06.11.2026
 8e47c5f7-3dc8-40d8-a993-34c2fbd62074,sdg,15,,0.5,ok,,Norman Kearney,06.11.2026
-8e47c5f7-3dc8-40d8-a993-34c2fbd62074,output_type,Academic,,0.95,ok,Journal article,Norman Kearney,06.11.2026
+8e47c5f7-3dc8-40d8-a993-34c2fbd62074,audience_type,Academic,,0.95,ok,Journal article,Norman Kearney,06.11.2026
 9db04558-724d-47f2-ae90-f350fe772fee,impact_area,TE,,0.5,ok,Pre-strategy overview; 2025-28 categories fit loosely,Norman Kearney,06.11.2026
 9db04558-724d-47f2-ae90-f350fe772fee,impact_area,SL,,0.5,ok,,Norman Kearney,06.11.2026
 9db04558-724d-47f2-ae90-f350fe772fee,sub_area,TE-d,,0.6,ok,Lobbying for mountains at UNCED,Norman Kearney,06.11.2026
@@ -154,7 +154,7 @@ record_id,dimension,term,role,confidence,status,note,checked_by,checked_on
 9db04558-724d-47f2-ae90-f350fe772fee,justice_lens,JUS-none-explicit,,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 9db04558-724d-47f2-ae90-f350fe772fee,sdg,13,,0.6,ok,,Norman Kearney,06.11.2026
 9db04558-724d-47f2-ae90-f350fe772fee,sdg,15,,0.5,ok,,Norman Kearney,06.11.2026
-9db04558-724d-47f2-ae90-f350fe772fee,output_type,Academic,,0.9,ok,Journal article; OCR'd text,Norman Kearney,06.11.2026
+9db04558-724d-47f2-ae90-f350fe772fee,audience_type,Academic,,0.9,ok,Journal article; OCR'd text,Norman Kearney,06.11.2026
 a09e8861-8eec-4055-87a1-676e546e6541,impact_area,SG,,0.85,ok,,Norman Kearney,06.11.2026
 a09e8861-8eec-4055-87a1-676e546e6541,impact_area,SL,,0.6,ok,,Norman Kearney,06.11.2026
 a09e8861-8eec-4055-87a1-676e546e6541,sub_area,SL-d,,0.85,ok,,Norman Kearney,06.11.2026
@@ -176,7 +176,7 @@ a09e8861-8eec-4055-87a1-676e546e6541,actors,ACT-ngos-and-civil-society,studied,0
 a09e8861-8eec-4055-87a1-676e546e6541,actors,ACT-national-and-local-government,studied,0.5,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 a09e8861-8eec-4055-87a1-676e546e6541,justice_lens,JUS-distributive,,0.5,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 a09e8861-8eec-4055-87a1-676e546e6541,sdg,15,,0.8,ok,,Norman Kearney,06.11.2026
-a09e8861-8eec-4055-87a1-676e546e6541,output_type,Academic,,0.95,ok,Journal article,Norman Kearney,06.11.2026
+a09e8861-8eec-4055-87a1-676e546e6541,audience_type,Academic,,0.95,ok,Journal article,Norman Kearney,06.11.2026
 ac8dbaec-da44-400b-aad5-1ac1d1838bb6,impact_area,TE,,0.95,ok,,Norman Kearney,06.11.2026
 ac8dbaec-da44-400b-aad5-1ac1d1838bb6,sub_area,TE-b,,0.85,ok,,Norman Kearney,06.11.2026
 ac8dbaec-da44-400b-aad5-1ac1d1838bb6,sub_area,TE-d,,0.7,ok,,Norman Kearney,06.11.2026
@@ -194,7 +194,7 @@ ac8dbaec-da44-400b-aad5-1ac1d1838bb6,actors,ACT-researchers-and-universities,stu
 ac8dbaec-da44-400b-aad5-1ac1d1838bb6,actors,ACT-youth-and-students,studied,0.4,ok,Young researchers; group fit weak; remapped to v0.3 code,Norman Kearney,06.11.2026
 ac8dbaec-da44-400b-aad5-1ac1d1838bb6,justice_lens,JUS-none-explicit,,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 ac8dbaec-da44-400b-aad5-1ac1d1838bb6,sdg,17,,0.5,ok,,Norman Kearney,06.11.2026
-ac8dbaec-da44-400b-aad5-1ac1d1838bb6,output_type,Academic,,0.85,ok,GAIA communications section,Norman Kearney,06.11.2026
+ac8dbaec-da44-400b-aad5-1ac1d1838bb6,audience_type,Academic,,0.85,ok,GAIA communications section,Norman Kearney,06.11.2026
 c45c2a72-d5ad-43b8-a113-3dc0a267aed8,impact_area,TE,,0.85,ok,,Norman Kearney,06.11.2026
 c45c2a72-d5ad-43b8-a113-3dc0a267aed8,sub_area,TE-d,,0.8,ok,Research funding schemes,Norman Kearney,06.11.2026
 c45c2a72-d5ad-43b8-a113-3dc0a267aed8,objective,O4,,0.5,ok,,Norman Kearney,06.11.2026
@@ -210,7 +210,7 @@ c45c2a72-d5ad-43b8-a113-3dc0a267aed8,actors,ACT-researchers-and-universities,aud
 c45c2a72-d5ad-43b8-a113-3dc0a267aed8,actors,ACT-national-and-local-government,audience,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 c45c2a72-d5ad-43b8-a113-3dc0a267aed8,justice_lens,JUS-none-explicit,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 c45c2a72-d5ad-43b8-a113-3dc0a267aed8,sdg,9,,0.7,ok,,Norman Kearney,06.11.2026
-c45c2a72-d5ad-43b8-a113-3dc0a267aed8,output_type,Academic,,0.6,ok,Society communication in GAIA,Norman Kearney,06.11.2026
+c45c2a72-d5ad-43b8-a113-3dc0a267aed8,audience_type,Academic,,0.6,ok,Society communication in GAIA,Norman Kearney,06.11.2026
 d3bf1ec2-8095-4b02-9349-e62ce449d7e2,impact_area,SL,,0.85,ok,,Norman Kearney,06.11.2026
 d3bf1ec2-8095-4b02-9349-e62ce449d7e2,sub_area,SL-b,,0.9,ok,,Norman Kearney,06.11.2026
 d3bf1ec2-8095-4b02-9349-e62ce449d7e2,sub_area,SL-d,,0.5,ok,Power asymmetries,Norman Kearney,06.11.2026
@@ -234,7 +234,7 @@ d3bf1ec2-8095-4b02-9349-e62ce449d7e2,justice_lens,JUS-power,,0.6,ok,remapped to 
 d3bf1ec2-8095-4b02-9349-e62ce449d7e2,sdg,15,,0.9,ok,,Norman Kearney,06.11.2026
 d3bf1ec2-8095-4b02-9349-e62ce449d7e2,sdg,1,,0.6,ok,,Norman Kearney,06.11.2026
 d3bf1ec2-8095-4b02-9349-e62ce449d7e2,sdg,10,,0.5,ok,,Norman Kearney,06.11.2026
-d3bf1ec2-8095-4b02-9349-e62ce449d7e2,output_type,Academic,,0.95,ok,Review article,Norman Kearney,06.11.2026
+d3bf1ec2-8095-4b02-9349-e62ce449d7e2,audience_type,Academic,,0.95,ok,Review article,Norman Kearney,06.11.2026
 dac3d725-e65b-4d99-a135-1f8eec9e4f83,impact_area,SL,,0.6,ok,Biophysical; fits CDE areas loosely,Norman Kearney,06.11.2026
 dac3d725-e65b-4d99-a135-1f8eec9e4f83,sub_area,SL-b,,0.45,ok,Weak fit,Norman Kearney,06.11.2026
 dac3d725-e65b-4d99-a135-1f8eec9e4f83,research_mode,M2,,0.6,ok,,Norman Kearney,06.11.2026
@@ -251,7 +251,7 @@ dac3d725-e65b-4d99-a135-1f8eec9e4f83,system,SYS-freshwater-and-waterbodies,,0.6,
 dac3d725-e65b-4d99-a135-1f8eec9e4f83,justice_lens,JUS-none-explicit,,0.9,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 dac3d725-e65b-4d99-a135-1f8eec9e4f83,sdg,13,,0.8,ok,,Norman Kearney,06.11.2026
 dac3d725-e65b-4d99-a135-1f8eec9e4f83,sdg,15,,0.6,ok,,Norman Kearney,06.11.2026
-dac3d725-e65b-4d99-a135-1f8eec9e4f83,output_type,Academic,,0.9,ok,Conference abstract,Norman Kearney,06.11.2026
+dac3d725-e65b-4d99-a135-1f8eec9e4f83,audience_type,Academic,,0.9,ok,Conference abstract,Norman Kearney,06.11.2026
 e7a43853-bb46-489a-8978-c7abf3b99585,impact_area,TE,,0.6,ok,,Norman Kearney,06.11.2026
 e7a43853-bb46-489a-8978-c7abf3b99585,sub_area,TE-d,,0.6,ok,,Norman Kearney,06.11.2026
 e7a43853-bb46-489a-8978-c7abf3b99585,pathway,P1,,0.5,ok,,Norman Kearney,06.11.2026
@@ -262,7 +262,7 @@ e7a43853-bb46-489a-8978-c7abf3b99585,actors,ACT-international-organisations-and-
 e7a43853-bb46-489a-8978-c7abf3b99585,actors,ACT-researchers-and-universities,audience,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 e7a43853-bb46-489a-8978-c7abf3b99585,justice_lens,JUS-none-explicit,,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 e7a43853-bb46-489a-8978-c7abf3b99585,sdg,15,,0.6,ok,,Norman Kearney,06.11.2026
-e7a43853-bb46-489a-8978-c7abf3b99585,output_type,Academic,,0.9,ok,Journal editorial,Norman Kearney,06.11.2026
+e7a43853-bb46-489a-8978-c7abf3b99585,audience_type,Academic,,0.9,ok,Journal editorial,Norman Kearney,06.11.2026
 fixture-synthetic-01,impact_area,SL,,0.9,ok,,Norman Kearney,06.11.2026
 fixture-synthetic-01,sub_area,SL-a,,0.8,ok,,Norman Kearney,06.11.2026
 fixture-synthetic-01,method,MET-household-and-other-surveys,,0.9,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
@@ -271,12 +271,12 @@ fixture-synthetic-01,region,Southern Asia,,0.95,changed,Derived from NPL; Nepal 
 fixture-synthetic-01,setting,SET-mountains,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 fixture-synthetic-01,actors,ACT-smallholders-and-land-users,studied,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 fixture-synthetic-01,sdg,2,,0.7,ok,,Norman Kearney,06.11.2026
-fixture-synthetic-01,output_type,Academic,,0.9,ok,Synthetic,Norman Kearney,06.11.2026
+fixture-synthetic-01,audience_type,Academic,,0.9,ok,Synthetic,Norman Kearney,06.11.2026
 fixture-synthetic-02,impact_area,SG,,0.3,ok,Metadata only: deliberately low confidence,Norman Kearney,06.11.2026
 fixture-synthetic-02,system,SYS-extractives-and-mining,,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 fixture-synthetic-02,country,LAO,,0.7,ok,,Norman Kearney,06.11.2026
 fixture-synthetic-02,region,CDE-MSEA,,0.7,changed,Derived from LAO; Renamed from 'Mainland Southeast Asia' (decision 0017),Norman Kearney,06.11.2026
-fixture-synthetic-02,output_type,Policy,,0.6,ok,,Norman Kearney,06.11.2026
+fixture-synthetic-02,audience_type,Policy,,0.6,ok,,Norman Kearney,06.11.2026
 fixture-synthetic-03,impact_area,SG,,0.7,ok,,Norman Kearney,06.11.2026
 fixture-synthetic-03,sub_area,SG-d,,0.7,ok,,Norman Kearney,06.11.2026
 fixture-synthetic-03,method,MET-interviews-and-focus-groups,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
@@ -305,7 +305,7 @@ fixture-synthetic-04,actors,ACT-grassroots-and-urban-commons-initiatives,co_prod
 fixture-synthetic-04,actors,ACT-researchers-and-universities,co_producer,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 fixture-synthetic-04,justice_lens,JUS-power,,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 fixture-synthetic-04,sdg,11,,0.7,ok,,Norman Kearney,06.11.2026
-fixture-synthetic-04,output_type,Academic,,0.6,ok,Synthetic working paper,Norman Kearney,06.11.2026
+fixture-synthetic-04,audience_type,Academic,,0.6,ok,Synthetic working paper,Norman Kearney,06.11.2026
 0674ad8c-bb2d-48d0-b866-8a07df79f5af,impact_area,TE,,0.9,ok,,Norman Kearney,06.11.2026
 0674ad8c-bb2d-48d0-b866-8a07df79f5af,sub_area,TE-c,,0.9,ok,Whole-institution teaching support at UniBe,Norman Kearney,06.11.2026
 0674ad8c-bb2d-48d0-b866-8a07df79f5af,sub_area,TE-a,,0.6,ok,Also curricula/teaching for change,Norman Kearney,06.11.2026
@@ -320,7 +320,7 @@ fixture-synthetic-04,output_type,Academic,,0.6,ok,Synthetic working paper,Norman
 0674ad8c-bb2d-48d0-b866-8a07df79f5af,actors,ACT-researchers-and-universities,audience,0.95,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 0674ad8c-bb2d-48d0-b866-8a07df79f5af,justice_lens,JUS-none-explicit,,0.7,ok,Only front matter seen; remapped to v0.3 code,Norman Kearney,06.11.2026
 0674ad8c-bb2d-48d0-b866-8a07df79f5af,sdg,4,,0.8,ok,,Norman Kearney,06.11.2026
-0674ad8c-bb2d-48d0-b866-8a07df79f5af,output_type,Practitioner,,0.7,ok,Audience is lecturers as teaching practitioners,Norman Kearney,06.11.2026
+0674ad8c-bb2d-48d0-b866-8a07df79f5af,audience_type,Practitioner,,0.7,ok,Audience is lecturers as teaching practitioners,Norman Kearney,06.11.2026
 0d741fd9-b15d-4057-b6f9-22395f89b413,impact_area,TE,,0.9,ok,,Norman Kearney,06.11.2026
 0d741fd9-b15d-4057-b6f9-22395f89b413,sub_area,TE-a,,0.85,ok,Decolonisation of a PhD programme,Norman Kearney,06.11.2026
 0d741fd9-b15d-4057-b6f9-22395f89b413,objective,O5,,0.7,ok,,Norman Kearney,06.11.2026
@@ -330,7 +330,7 @@ fixture-synthetic-04,output_type,Academic,,0.6,ok,Synthetic working paper,Norman
 0d741fd9-b15d-4057-b6f9-22395f89b413,justice_lens,JUS-decolonial,,0.95,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 0d741fd9-b15d-4057-b6f9-22395f89b413,sdg,4,,0.8,ok,,Norman Kearney,06.11.2026
 0d741fd9-b15d-4057-b6f9-22395f89b413,sdg,10,,0.5,ok,,Norman Kearney,06.11.2026
-0d741fd9-b15d-4057-b6f9-22395f89b413,output_type,Academic,,0.6,ok,Institutional evaluation report; could be Policy,Norman Kearney,06.11.2026
+0d741fd9-b15d-4057-b6f9-22395f89b413,audience_type,Academic,,0.6,ok,Institutional evaluation report; could be Policy,Norman Kearney,06.11.2026
 0d741fd9-b15d-4057-b6f9-22395f89b413,method,MET-household-and-other-surveys,,0.9,ok,Alumni tracer survey; remapped to v0.3 code,Norman Kearney,06.11.2026
 0d741fd9-b15d-4057-b6f9-22395f89b413,method,MET-literature-and-systematic-review,,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 0d741fd9-b15d-4057-b6f9-22395f89b413,data_type,DAT-primary-quantitative,,0.6,ok,Questionnaire; may be mixed; remapped to v0.3 code,Norman Kearney,06.11.2026
@@ -347,7 +347,7 @@ fixture-synthetic-04,output_type,Academic,,0.6,ok,Synthetic working paper,Norman
 0eb401b2-9ef0-4478-9abf-6667fb39a0ac,country,global_or_multi_country,,0.6,ok,Global framing,Norman Kearney,06.11.2026
 0eb401b2-9ef0-4478-9abf-6667fb39a0ac,justice_lens,JUS-distributive,,0.9,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 0eb401b2-9ef0-4478-9abf-6667fb39a0ac,sdg,10,,0.95,ok,,Norman Kearney,06.11.2026
-0eb401b2-9ef0-4478-9abf-6667fb39a0ac,output_type,Academic,,0.8,ok,Book editorial,Norman Kearney,06.11.2026
+0eb401b2-9ef0-4478-9abf-6667fb39a0ac,audience_type,Academic,,0.8,ok,Book editorial,Norman Kearney,06.11.2026
 0eb401b2-9ef0-4478-9abf-6667fb39a0ac,justice_lens,JUS-gender,,0.5,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 0eb401b2-9ef0-4478-9abf-6667fb39a0ac,method,MET-conceptual-and-theoretical-work,,0.75,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 0eb401b2-9ef0-4478-9abf-6667fb39a0ac,scale,SCA-global,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
@@ -374,7 +374,7 @@ fixture-synthetic-04,output_type,Academic,,0.6,ok,Synthetic working paper,Norman
 25c17984-c6c0-4487-8638-5bb606748603,justice_lens,JUS-distributive,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 25c17984-c6c0-4487-8638-5bb606748603,sdg,1,,0.9,ok,,Norman Kearney,06.11.2026
 25c17984-c6c0-4487-8638-5bb606748603,sdg,2,,0.8,ok,,Norman Kearney,06.11.2026
-25c17984-c6c0-4487-8638-5bb606748603,output_type,Policy,,0.6,ok,Policy-oriented MRD section,Norman Kearney,06.11.2026
+25c17984-c6c0-4487-8638-5bb606748603,audience_type,Policy,,0.6,ok,Policy-oriented MRD section,Norman Kearney,06.11.2026
 25c17984-c6c0-4487-8638-5bb606748603,country,BOL,,0.7,ok,One of three PRSP examples,Norman Kearney,06.11.2026
 25c17984-c6c0-4487-8638-5bb606748603,country,VNM,,0.7,ok,One of three PRSP examples,Norman Kearney,06.11.2026
 25c17984-c6c0-4487-8638-5bb606748603,region,CDE-SAM,,0.7,changed,Derived from BOL; Renamed from 'South America and central Andes' (decision 0017),Norman Kearney,06.11.2026
@@ -394,7 +394,7 @@ fixture-synthetic-04,output_type,Academic,,0.6,ok,Synthetic working paper,Norman
 5a56f17f-cbe3-4cc0-9511-ec2674dd2beb,system,SYS-food-systems-and-agriculture,,0.95,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 5a56f17f-cbe3-4cc0-9511-ec2674dd2beb,actors,ACT-smallholders-and-land-users,studied,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 5a56f17f-cbe3-4cc0-9511-ec2674dd2beb,sdg,2,,0.85,ok,,Norman Kearney,06.11.2026
-5a56f17f-cbe3-4cc0-9511-ec2674dd2beb,output_type,Academic,,0.8,ok,,Norman Kearney,06.11.2026
+5a56f17f-cbe3-4cc0-9511-ec2674dd2beb,audience_type,Academic,,0.8,ok,,Norman Kearney,06.11.2026
 5a56f17f-cbe3-4cc0-9511-ec2674dd2beb,method,MET-conceptual-and-theoretical-work,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 5a56f17f-cbe3-4cc0-9511-ec2674dd2beb,justice_lens,JUS-recognition,,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 8001ee4f-ae98-47a8-9347-26a6da9baa21,impact_area,JE,,0.9,ok,,Norman Kearney,06.11.2026
@@ -410,7 +410,7 @@ fixture-synthetic-04,output_type,Academic,,0.6,ok,Synthetic working paper,Norman
 8001ee4f-ae98-47a8-9347-26a6da9baa21,system,SYS-social-security-and-care,,0.6,ok,Hospital = care sector; remapped to v0.3 code,Norman Kearney,06.11.2026
 8001ee4f-ae98-47a8-9347-26a6da9baa21,actors,ACT-companies-and-investors,studied,0.6,ok,Hospital as employer; remapped to v0.3 code,Norman Kearney,06.11.2026
 8001ee4f-ae98-47a8-9347-26a6da9baa21,sdg,8,,0.9,ok,,Norman Kearney,06.11.2026
-8001ee4f-ae98-47a8-9347-26a6da9baa21,output_type,Academic,,0.6,ok,Also Practitioner,Norman Kearney,06.11.2026
+8001ee4f-ae98-47a8-9347-26a6da9baa21,audience_type,Academic,,0.6,ok,Also Practitioner,Norman Kearney,06.11.2026
 8001ee4f-ae98-47a8-9347-26a6da9baa21,method,MET-household-and-other-surveys,,0.85,ok,"Employee survey, three waves; remapped to v0.3 code",Norman Kearney,06.11.2026
 8001ee4f-ae98-47a8-9347-26a6da9baa21,method,MET-pilots-and-field-experiments,,0.85,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 8001ee4f-ae98-47a8-9347-26a6da9baa21,method,MET-impact-and-sustainability-assessment,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
@@ -444,7 +444,7 @@ fixture-synthetic-04,output_type,Academic,,0.6,ok,Synthetic working paper,Norman
 8632a01d-8dad-40aa-9926-a9120617c29a,justice_lens,JUS-none-explicit,,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 8632a01d-8dad-40aa-9926-a9120617c29a,sdg,15,,0.6,ok,,Norman Kearney,06.11.2026
 8632a01d-8dad-40aa-9926-a9120617c29a,sdg,6,,0.6,ok,,Norman Kearney,06.11.2026
-8632a01d-8dad-40aa-9926-a9120617c29a,output_type,Academic,,0.6,ok,Institutional portrait in a journal; could be Policy,Norman Kearney,06.11.2026
+8632a01d-8dad-40aa-9926-a9120617c29a,audience_type,Academic,,0.6,ok,Institutional portrait in a journal; could be Policy,Norman Kearney,06.11.2026
 8632a01d-8dad-40aa-9926-a9120617c29a,country,LAO,,0.7,ok,,Norman Kearney,06.11.2026
 8632a01d-8dad-40aa-9926-a9120617c29a,country,BOL,,0.6,ok,,Norman Kearney,06.11.2026
 8632a01d-8dad-40aa-9926-a9120617c29a,country,PER,,0.6,ok,,Norman Kearney,06.11.2026
@@ -468,7 +468,7 @@ fixture-synthetic-04,output_type,Academic,,0.6,ok,Synthetic working paper,Norman
 82d7bbd0-6e95-44c5-9fac-617c24dd3bd2,actors,ACT-ngos-and-civil-society,studied,0.5,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 82d7bbd0-6e95-44c5-9fac-617c24dd3bd2,sdg,11,,0.8,ok,,Norman Kearney,06.11.2026
 82d7bbd0-6e95-44c5-9fac-617c24dd3bd2,sdg,2,,0.7,ok,,Norman Kearney,06.11.2026
-82d7bbd0-6e95-44c5-9fac-617c24dd3bd2,output_type,Policy,,0.7,ok,Comparative series for Swiss cities,Norman Kearney,06.11.2026
+82d7bbd0-6e95-44c5-9fac-617c24dd3bd2,audience_type,Policy,,0.7,ok,Comparative series for Swiss cities,Norman Kearney,06.11.2026
 82d7bbd0-6e95-44c5-9fac-617c24dd3bd2,impact_area,JE,,0.7,ok,,Norman Kearney,06.11.2026
 82d7bbd0-6e95-44c5-9fac-617c24dd3bd2,research_mode,M2,,0.7,ok,,Norman Kearney,06.11.2026
 82d7bbd0-6e95-44c5-9fac-617c24dd3bd2,sdg,12,,0.7,ok,,Norman Kearney,06.11.2026
@@ -493,7 +493,7 @@ d012a8d7-8b08-41fe-b46b-f551dd068417,justice_lens,JUS-none-explicit,,0.6,ok,Only
 d012a8d7-8b08-41fe-b46b-f551dd068417,sdg,11,,0.8,ok,,Norman Kearney,06.11.2026
 d012a8d7-8b08-41fe-b46b-f551dd068417,sdg,2,,0.7,ok,,Norman Kearney,06.11.2026
 d012a8d7-8b08-41fe-b46b-f551dd068417,sdg,12,,0.6,ok,,Norman Kearney,06.11.2026
-d012a8d7-8b08-41fe-b46b-f551dd068417,output_type,Policy,,0.7,ok,Comparative series for Swiss cities,Norman Kearney,06.11.2026
+d012a8d7-8b08-41fe-b46b-f551dd068417,audience_type,Policy,,0.7,ok,Comparative series for Swiss cities,Norman Kearney,06.11.2026
 d012a8d7-8b08-41fe-b46b-f551dd068417,impact_area,JE,,0.7,ok,,Norman Kearney,06.11.2026
 d012a8d7-8b08-41fe-b46b-f551dd068417,research_mode,M2,,0.7,ok,,Norman Kearney,06.11.2026
 d012a8d7-8b08-41fe-b46b-f551dd068417,method,MET-document-and-policy-analysis,,0.9,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
@@ -515,7 +515,7 @@ aa8e1522-ccd7-4dcf-a9e6-44a5d6eae9a7,system,SYS-science-policy-interfaces,,0.6,o
 aa8e1522-ccd7-4dcf-a9e6-44a5d6eae9a7,actors,ACT-national-and-local-government,audience,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 aa8e1522-ccd7-4dcf-a9e6-44a5d6eae9a7,justice_lens,JUS-none-explicit,,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 aa8e1522-ccd7-4dcf-a9e6-44a5d6eae9a7,sdg,15,,0.5,ok,Mountain targets sit in SDG 15; framework covers all,Norman Kearney,06.11.2026
-aa8e1522-ccd7-4dcf-a9e6-44a5d6eae9a7,output_type,Academic,,0.6,ok,Could be Policy,Norman Kearney,06.11.2026
+aa8e1522-ccd7-4dcf-a9e6-44a5d6eae9a7,audience_type,Academic,,0.6,ok,Could be Policy,Norman Kearney,06.11.2026
 aa8e1522-ccd7-4dcf-a9e6-44a5d6eae9a7,pathway,P1,,0.8,ok,,Norman Kearney,06.11.2026
 aa8e1522-ccd7-4dcf-a9e6-44a5d6eae9a7,method,MET-monitoring-evaluation-and-learning,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 aa8e1522-ccd7-4dcf-a9e6-44a5d6eae9a7,sdg,1,,0.4,ok,"Programme goal, not the paper's focus",Norman Kearney,06.11.2026
@@ -529,7 +529,7 @@ bdf7b415-f133-4632-a184-ee6e0c62517b,system,SYS-higher-education,,0.95,ok,remapp
 bdf7b415-f133-4632-a184-ee6e0c62517b,actors,ACT-researchers-and-universities,audience,0.9,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 bdf7b415-f133-4632-a184-ee6e0c62517b,justice_lens,JUS-none-explicit,,0.5,ok,Only cover and TOC; remapped to v0.3 code,Norman Kearney,06.11.2026
 bdf7b415-f133-4632-a184-ee6e0c62517b,sdg,4,,0.8,ok,,Norman Kearney,06.11.2026
-bdf7b415-f133-4632-a184-ee6e0c62517b,output_type,Academic,,0.6,ok,Whole bulletin issue; could be Practitioner,Norman Kearney,06.11.2026
+bdf7b415-f133-4632-a184-ee6e0c62517b,audience_type,Academic,,0.6,ok,Whole bulletin issue; could be Practitioner,Norman Kearney,06.11.2026
 bdf7b415-f133-4632-a184-ee6e0c62517b,method,MET-conceptual-and-theoretical-work,,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 bdf7b415-f133-4632-a184-ee6e0c62517b,sub_area,TE-a,,0.7,ok,,Norman Kearney,06.11.2026
 bdf7b415-f133-4632-a184-ee6e0c62517b,actors,ACT-youth-and-students,studied,0.5,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
@@ -548,7 +548,7 @@ c191917c-34df-4dfe-8f2d-aaaffb20bb05,region,South-eastern Asia,,0.6,ok,Derived f
 c191917c-34df-4dfe-8f2d-aaaffb20bb05,scale,SCA-global,,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 c191917c-34df-4dfe-8f2d-aaaffb20bb05,system,SYS-large-scale-land-investments,,0.95,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 c191917c-34df-4dfe-8f2d-aaaffb20bb05,sdg,15,,0.5,ok,,Norman Kearney,06.11.2026
-c191917c-34df-4dfe-8f2d-aaaffb20bb05,output_type,Policy,,0.6,ok,Land Matrix analytical report,Norman Kearney,06.11.2026
+c191917c-34df-4dfe-8f2d-aaaffb20bb05,audience_type,Policy,,0.6,ok,Land Matrix analytical report,Norman Kearney,06.11.2026
 c191917c-34df-4dfe-8f2d-aaaffb20bb05,actors,ACT-smallholders-and-land-users,studied,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 c191917c-34df-4dfe-8f2d-aaaffb20bb05,actors,ACT-pastoralists,studied,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 c191917c-34df-4dfe-8f2d-aaaffb20bb05,actors,ACT-indigenous-peoples-and-local-communities,studied,0.85,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
@@ -574,7 +574,7 @@ c7c9136f-52b3-40d4-893c-cb638a9c2147,system,SYS-higher-education,,0.95,ok,remapp
 c7c9136f-52b3-40d4-893c-cb638a9c2147,actors,ACT-researchers-and-universities,studied,0.85,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 c7c9136f-52b3-40d4-893c-cb638a9c2147,justice_lens,JUS-none-explicit,,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 c7c9136f-52b3-40d4-893c-cb638a9c2147,sdg,4,,0.85,ok,,Norman Kearney,06.11.2026
-c7c9136f-52b3-40d4-893c-cb638a9c2147,output_type,Policy,,0.6,ok,Internal report for university management,Norman Kearney,06.11.2026
+c7c9136f-52b3-40d4-893c-cb638a9c2147,audience_type,Policy,,0.6,ok,Internal report for university management,Norman Kearney,06.11.2026
 c7c9136f-52b3-40d4-893c-cb638a9c2147,pathway,P3,,0.6,ok,,Norman Kearney,06.11.2026
 c7c9136f-52b3-40d4-893c-cb638a9c2147,objective,O5,,0.8,ok,,Norman Kearney,06.11.2026
 c7c9136f-52b3-40d4-893c-cb638a9c2147,method,MET-document-and-policy-analysis,,0.75,ok,Course catalogue search; remapped to v0.3 code,Norman Kearney,06.11.2026
@@ -592,7 +592,7 @@ d74fe85e-543f-4f8e-a742-1927a8b09bd4,actors,ACT-national-and-local-government,au
 d74fe85e-543f-4f8e-a742-1927a8b09bd4,actors,ACT-researchers-and-universities,audience,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 d74fe85e-543f-4f8e-a742-1927a8b09bd4,justice_lens,JUS-none-explicit,,0.7,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 d74fe85e-543f-4f8e-a742-1927a8b09bd4,sdg,15,,0.6,ok,,Norman Kearney,06.11.2026
-d74fe85e-543f-4f8e-a742-1927a8b09bd4,output_type,Academic,,0.95,ok,Journal editorial,Norman Kearney,06.11.2026
+d74fe85e-543f-4f8e-a742-1927a8b09bd4,audience_type,Academic,,0.95,ok,Journal editorial,Norman Kearney,06.11.2026
 d74fe85e-543f-4f8e-a742-1927a8b09bd4,method,MET-knowledge-co-production,,0.4,ok,"Recommended, not used; remapped to v0.3 code",Norman Kearney,06.11.2026
 d74fe85e-543f-4f8e-a742-1927a8b09bd4,scale,SCA-cross-scale,,0.75,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 d74fe85e-543f-4f8e-a742-1927a8b09bd4,country,ARG,,0.4,ok,Example from one article,Norman Kearney,06.11.2026
@@ -613,7 +613,7 @@ e5176970-c1f2-4e83-82d7-3f7f779a1d08,scale,SCA-subnational,,0.6,ok,remapped to v
 e5176970-c1f2-4e83-82d7-3f7f779a1d08,system,SYS-freshwater-and-waterbodies,,0.95,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 e5176970-c1f2-4e83-82d7-3f7f779a1d08,sdg,6,,0.9,ok,,Norman Kearney,06.11.2026
 e5176970-c1f2-4e83-82d7-3f7f779a1d08,sdg,13,,0.6,ok,,Norman Kearney,06.11.2026
-e5176970-c1f2-4e83-82d7-3f7f779a1d08,output_type,Academic,,0.95,ok,Journal article,Norman Kearney,06.11.2026
+e5176970-c1f2-4e83-82d7-3f7f779a1d08,audience_type,Academic,,0.95,ok,Journal article,Norman Kearney,06.11.2026
 e5176970-c1f2-4e83-82d7-3f7f779a1d08,justice_lens,JUS-distributive,,0.8,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 e5176970-c1f2-4e83-82d7-3f7f779a1d08,actors,ACT-national-and-local-government,studied,0.8,ok,Communes; remapped to v0.3 code,Norman Kearney,06.11.2026
 f50a5dcd-3422-45f4-b579-4abef4dda308,impact_area,JE,,0.8,ok,,Norman Kearney,06.11.2026
@@ -628,7 +628,7 @@ f50a5dcd-3422-45f4-b579-4abef4dda308,justice_lens,JUS-recognition,,0.4,ok,Weak; 
 f50a5dcd-3422-45f4-b579-4abef4dda308,justice_lens,JUS-procedural,,0.4,ok,Weak; participation culture; remapped to v0.3 code,Norman Kearney,06.11.2026
 f50a5dcd-3422-45f4-b579-4abef4dda308,sdg,11,,0.6,ok,Target 11.4 cultural heritage,Norman Kearney,06.11.2026
 f50a5dcd-3422-45f4-b579-4abef4dda308,sdg,15,,0.5,ok,,Norman Kearney,06.11.2026
-f50a5dcd-3422-45f4-b579-4abef4dda308,output_type,Academic,,0.7,ok,,Norman Kearney,06.11.2026
+f50a5dcd-3422-45f4-b579-4abef4dda308,audience_type,Academic,,0.7,ok,,Norman Kearney,06.11.2026
 f50a5dcd-3422-45f4-b579-4abef4dda308,method,MET-case-study,,0.5,ok,Comparative project across parks; remapped to v0.3 code,Norman Kearney,06.11.2026
 f50a5dcd-3422-45f4-b579-4abef4dda308,method,MET-literature-and-systematic-review,,0.6,ok,remapped to v0.3 code,Norman Kearney,06.11.2026
 453f1ec7-d260-4d02-a003-6b95d48c26b2,additional_sub_area,ASA-conservation-development-trade-offs,,0.8,ok,,Norman Kearney,08.11.2026

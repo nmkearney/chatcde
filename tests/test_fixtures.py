@@ -73,7 +73,7 @@ def allowed_terms() -> dict[Dimension, set[str] | None]:
             terms[d] = set(node["cde_partner_region"]) | M49
         elif d is Dimension.ACTORS and "terms" not in node:
             terms[d] = flatten(node["groups"])
-        elif d is Dimension.OUTPUT_TYPE:
+        elif d is Dimension.AUDIENCE_TYPE:
             terms[d] = set(node["audience"])
         else:
             terms[d] = flatten(node)
