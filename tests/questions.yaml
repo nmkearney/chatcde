@@ -200,21 +200,23 @@ questions:
     kind: count
     expect:
       tools: [count_by]
-      numbers: [233, 741]
+      numbers: [233]
     notes: >
       Filtered by impact area. `chatcde count audience_type --tag impact_area:TE`:
       Policy 233 of 741 TE records (Academic 533, Practitioner 217, Public 20; 118
-      untagged).
+      untagged). 233 of 623 (the TE records with an audience tag, from
+      `count impact_area audience_type`) is also right when it says so, so only 233
+      is required (changed after the baseline of 2026-11-15).
 
   - id: count-laos
     question: "How many CDE publications are about Laos?"
     kind: count
     expect:
-      tools: [count_by]
       numbers: [142]
     notes: >
       `chatcde count country`: LAO 142 of 3,003 (country tags; 585 records have none).
-      Title search alone finds fewer (35 titles say "Laos").
+      Title search alone finds fewer (35 titles say "Laos"). No tool is required:
+      list_vocabulary's record counts give the same 142 (baseline, 2026-11-15).
 
   - id: count-since-2020
     question: "How many publications has CDE produced since 2020, and in which impact area most?"

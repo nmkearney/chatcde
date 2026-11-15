@@ -164,8 +164,17 @@ def numbers_in(text: str) -> set[float]:
     return {float(n) for n in _NUMBER.findall(plain)}
 
 
+#: Typographic hyphens and spaces, read as plain ones when matching words:
+#: gpt-oss writes ``Kenney\u2011Lazar`` (U+2011), which a plain ``in`` misses.
+_PLAIN = str.maketrans(
+    dict.fromkeys("\u2010\u2011\u2012\u2212", "-")
+    | dict.fromkeys("\u00a0\u2007\u2009\u202f", " ")
+)
+
+
 def _fold(text: str) -> str:
-    return text.casefold()
+    """``text`` for case-insensitive matching, with plain hyphens and spaces."""
+    return text.translate(_PLAIN).casefold()
 
 
 def score_answer(

@@ -189,7 +189,7 @@ def test_render_result_lists_count_queries_and_a_rewrite():
     console = Console(record=True, width=200)
     render_result(console, r)
     out = console.export_text()
-    assert "Counts (the queries behind the numbers)" in out
+    assert "Count queries run (to check the numbers)" in out
     assert (
         "- count_by(row=method, impact_areas=[SG]): 1,275 records match, "
         "3 of them have no method tag" in out
