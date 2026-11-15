@@ -32,16 +32,15 @@ vocabulary and code versions (CLAUDE.md: reproducibility).
 
 from __future__ import annotations
 
-import json
 import logging
 import time
 from collections.abc import Callable
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field
 
-from chatcde.agent import AgentError, load_prompt
+from chatcde.agent import AgentError
 from chatcde.harvest.common import code_version, now
 from chatcde.schemas import Citation, Dimension, Filters, GapCell, Level, Passage
 from chatcde.store.endpoint import EndpointError
@@ -50,6 +49,7 @@ from chatcde.tools.counts import count_matrix, gap_report, level_groups
 from chatcde.tools.publications import citation, records_by_id, search_publications
 from chatcde.tools.vocabulary import dimension_entries, group_entries
 from chatcde.workflows.answer import data_note
+from chatcde.workflows.structured import request_structured, strict_schema
 
 log = logging.getLogger(__name__)
 
@@ -157,23 +157,7 @@ class GapsJudgement(BaseModel):
 
 def judgement_schema() -> dict[str, Any]:
     """:class:`GapsJudgement` as a strict JSON schema (no titles, no ``$ref``)."""
-    schema = GapsJudgement.model_json_schema()
-    defs = schema.pop("$defs", {})
-
-    def clean(node: Any) -> Any:
-        if isinstance(node, dict):
-            if "$ref" in node:
-                return clean(defs[node["$ref"].rsplit("/", 1)[-1]])
-            out = {k: clean(v) for k, v in node.items() if k != "title"}
-            if out.get("type") == "object":
-                out["additionalProperties"] = False
-                out["required"] = list(out.get("properties", {}))
-            return out
-        if isinstance(node, list):
-            return [clean(v) for v in node]
-        return node
-
-    return clean(schema)
+    return strict_schema(GapsJudgement)
 
 
 # --- result ---------------------------------------------------------------------------
@@ -499,15 +483,6 @@ def _evidence_payload(result: GapsResult) -> dict[str, Any]:
     }
 
 
-def _parse_judgement(content: str) -> GapsJudgement:
-    """Read the model's JSON reply (tolerating a Markdown code fence)."""
-    text = content.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1] if "\n" in text else ""
-        text = text.rsplit("```", 1)[0]
-    return GapsJudgement.model_validate_json(text)
-
-
 def _check_judgement(
     judgement: GapsJudgement, cells: list[CellEvidence]
 ) -> tuple[GapsJudgement, list[str]]:
@@ -555,44 +530,20 @@ def judge(
         AgentError: The reply is missing, not JSON or not a valid judgement.
         chatcde.store.endpoint.EndpointError: The request fails.
     """
-    cfg = ctx.cfg
-    s = cfg.gaps
-    schema = judgement_schema()
-    system = load_prompt(cfg.prompts.dir, s.prompt).replace(
-        "{schema}", json.dumps(schema, ensure_ascii=False)
+    s = ctx.cfg.gaps
+    parsed, usage = request_structured(
+        ctx,
+        model_name=model,
+        prompt=s.prompt,
+        reply_model=GapsJudgement,
+        schema_name="gaps_judgement",
+        evidence=_evidence_payload(result),
+        temperature=s.temperature,
+        max_tokens=s.max_tokens,
+        structured_output=s.structured_output,
+        tokens_setting="gaps.max_tokens",
+        reply_label="judgement",
     )
-    payload: dict[str, Any] = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": system},
-            {
-                "role": "user",
-                "content": json.dumps(
-                    _evidence_payload(result), ensure_ascii=False, indent=1
-                ),
-            },
-        ],
-        "temperature": s.temperature,
-        "max_tokens": s.max_tokens,
-        **cfg.agent.extra_body,
-    }
-    if s.structured_output:
-        payload["response_format"] = {
-            "type": "json_schema",
-            "json_schema": {"name": "gaps_judgement", "schema": schema, "strict": True},
-        }
-    body = ctx.endpoint().post_json("/chat/completions", payload)
-    choices = body.get("choices") or []
-    message = choices[0].get("message") if choices else None
-    if not isinstance(message, dict) or not message.get("content"):
-        raise AgentError(f"no answer in the reply: {str(body)[:200]}")
-    if choices[0].get("finish_reason") == "length":
-        raise AgentError("the reply was cut off; raise gaps.max_tokens")
-    try:
-        parsed = _parse_judgement(message["content"])
-    except ValidationError as exc:
-        raise AgentError(f"the reply is not a valid judgement: {exc}") from exc
-    usage = {k: v for k, v in (body.get("usage") or {}).items() if isinstance(v, int)}
     checked, dropped = _check_judgement(parsed, result.cells)
     return checked, dropped, usage
 

@@ -48,6 +48,7 @@ CORE_TOOLS: dict[str, Callable[..., Any]] = {
         core.count_by,
         core.find_gaps,
         core.coverage_report,
+        core.find_expertise,
     )
 }
 

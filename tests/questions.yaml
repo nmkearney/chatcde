@@ -398,3 +398,36 @@ questions:
     notes: >
       24 records have WOCAT in the title; the list is the full-text ones plus 3d0d862d-…
       (2023, extension services, metadata only).
+
+  # --- experts: who has worked on a topic (#71, decision 0046) -------------------
+  - id: experts-telecoupling
+    question: "Which CDE researchers have published most on telecoupling?"
+    kind: experts
+    expect:
+      tools: [find_expertise]
+      mentions: ["Zähringer"]
+      mentions_any: ["Llopis", "Heinimann", "Messerli", "Oberlack"]
+    notes: >
+      `chatcde experts telecoupling --no-llm` (2026-11-15): 52 matching records;
+      Zähringer 24, Llopis Sendino 13, Heinimann 11, Messerli 11, Oberlack 10.
+
+  - id: experts-pastoralism-east-africa
+    question: "Who at CDE has worked on pastoralism in East Africa?"
+    kind: experts
+    expect:
+      tools: [find_expertise]
+      mentions_any: ["Höggel", "Kiteme", "Breu", "Rueff", "Eckert"]
+    notes: >
+      The planning.md example. `chatcde experts pastoralism --region CDE-EAF --no-llm`:
+      12 records; Höggel 3, Breu 2, Kiteme 2, Rueff 2. Without the region filter but
+      with "East Africa" in the topic: Eckert 6, Mekdaschi 5, Liniger 4, Höggel 3.
+
+  - id: experts-pastoralism
+    question: "I am writing a proposal on pastoralism. Which CDE colleagues should I talk to?"
+    kind: experts
+    expect:
+      tools: [find_expertise]
+      mentions_any: ["Rueff", "Liniger", "Mekdaschi", "Harari"]
+    notes: >
+      `chatcde experts pastoralism --no-llm`: 38 records; Rueff 6, Liniger 5,
+      Mekdaschi 5, Harari 3, Eckert 3, Wiesmann 3.

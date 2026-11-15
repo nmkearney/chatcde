@@ -360,9 +360,131 @@ def brief() -> None:
 
 
 @app.command(rich_help_panel=PANEL_ASSISTANT)
-def experts() -> None:
-    """Find CDE researchers who have worked on a topic."""
-    not_implemented("experts")
+def experts(
+    ctx: typer.Context,
+    topic: Annotated[
+        str | None,
+        typer.Argument(
+            help="What to search for, e.g. 'pastoralism' (optional with tag filters)."
+        ),
+    ] = None,
+    year_from: Annotated[int | None, typer.Option(help="Earliest year.")] = None,
+    year_to: Annotated[int | None, typer.Option(help="Latest year.")] = None,
+    unit: Annotated[
+        list[str] | None, typer.Option(help="Scope: CDE unit (repeatable).")
+    ] = None,
+    pub_type: Annotated[
+        list[str] | None,
+        typer.Option("--type", help="Scope: BORIS type (repeatable)."),
+    ] = None,
+    lang: Annotated[
+        list[str] | None, typer.Option(help="Scope: language code (repeatable).")
+    ] = None,
+    country: Annotated[
+        list[str] | None,
+        typer.Option(help="Scope: country tag, ISO alpha-3 (repeatable)."),
+    ] = None,
+    region: Annotated[
+        list[str] | None, typer.Option(help="Scope: region tag (repeatable).")
+    ] = None,
+    sub_area: Annotated[
+        list[str] | None,
+        typer.Option(help="Scope: sub-area tag, e.g. SL-d (repeatable)."),
+    ] = None,
+    method: Annotated[
+        list[str] | None, typer.Option(help="Scope: method tag (repeatable).")
+    ] = None,
+    sdg: Annotated[
+        list[int] | None, typer.Option(help="Scope: SDG number (repeatable).")
+    ] = None,
+    tag: TagOption = None,
+    min_confidence: Annotated[
+        float | None,
+        typer.Option(
+            min=0.0,
+            max=1.0,
+            help="Lowest tag confidence counted [default: tools.min_confidence].",
+        ),
+    ] = None,
+    k: Annotated[
+        int, typer.Option("-k", min=1, help="People to list (max experts.max_k).")
+    ] = 10,
+    all_authors: Annotated[
+        bool,
+        typer.Option(
+            "--all-authors", help="Also list external co-authors (default: CDE only)."
+        ),
+    ] = False,
+    no_llm: Annotated[
+        bool,
+        typer.Option("--no-llm", help="Ranking and evidence only; no model reasons."),
+    ] = False,
+    alternative: AlternativeOption = False,
+    log_file: LogOption = None,
+    as_json: Annotated[
+        bool, typer.Option("--json", help="Print the full ExpertsResult as JSON.")
+    ] = False,
+) -> None:
+    """Find CDE researchers who have worked on a topic.
+
+    A fixed chain: match records to the topic (search) and filters (tags), rank
+    the people who wrote them by matching and recent records (code), show each
+    person's best-matching records, then ask the agent model for a one-line
+    reason per person. Authors are merged by ORCID and name (decision 0046).
+    """
+    from rich.console import Console
+
+    from chatcde.tools.context import ToolContext
+    from chatcde.workflows.experts import ExpertsError, render_experts, run_experts
+
+    cfg = ctx.obj
+    if not cfg.data.catalogue.is_file():
+        typer.echo(
+            f"No catalogue at {cfg.data.catalogue}; run `chatcde fetch-data` first.",
+            err=True,
+        )
+        raise typer.Exit(code=1)
+    model = cfg.model_alternatives.agent if alternative else None
+    if alternative and not model:
+        typer.echo("No alternative agent model is set in the config.", err=True)
+        raise typer.Exit(code=2)
+    filters = build_filters(
+        tag,
+        year_from=year_from,
+        year_to=year_to,
+        cde_units=unit or [],
+        pub_types=pub_type or [],
+        languages=lang or [],
+        countries=country or [],
+        regions=region or [],
+        sub_areas=sub_area or [],
+        methods=method or [],
+        sdgs=sdg or [],
+        min_confidence=min_confidence,
+    )
+    tool_ctx = ToolContext(cfg)
+    err = Console(stderr=True)
+    try:
+        with err.status("Searching, ranking and explaining ...", spinner="dots"):
+            result = run_experts(
+                tool_ctx,
+                topic or "",
+                filters,
+                k=k,
+                cde_only=not all_authors,
+                use_llm=not no_llm,
+                model=model,
+            )
+    except ExpertsError as exc:
+        err.print(f"[red]{exc}[/red]", highlight=False)
+        raise typer.Exit(code=1) from exc
+    finally:
+        tool_ctx.close()
+    _log(log_file, result)
+    if as_json:
+        typer.echo(result.model_dump_json(indent=2))
+        return
+    render_experts(Console(), result)
 
 
 def evaluate_questions(

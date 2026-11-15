@@ -173,6 +173,24 @@ def search_publications(
     settings = SearchSettings.from_config(
         cfg, top_n=k, candidates=max(cfg.retrieval.top_k, k)
     )
+    passages = search_passages(ctx, query, filters, settings)
+    log.info("search_publications %r: %d passages", query, len(passages))
+    return passages
+
+
+def search_passages(
+    ctx: ToolContext, query: str, filters: Filters, settings: SearchSettings
+) -> list[Passage]:
+    """Run one hybrid search and turn its chunks into cited passages.
+
+    Shared by ``search_publications`` and ``find_expertise``, which searches
+    deeper than ``tools.max_k``. ``filters`` must already be expanded
+    (:meth:`ToolContext.expand`). Each passage's ``score`` is the rerank score
+    when ``settings.will_rerank``, else the fusion score.
+
+    Raises:
+        ToolError: No index, tag filters without tags, or the endpoint failing.
+    """
     client = ctx.endpoint() if settings.needs_client else None
     with ctx.catalogue() as con:
         try:
@@ -192,7 +210,6 @@ def search_publications(
                 chunk=h.chunk, score=h.score, citation=citation(rec, h.chunk.page_start)
             )
         )
-    log.info("search_publications %r: %d passages", query, len(passages))
     return passages
 
 

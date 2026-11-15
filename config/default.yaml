@@ -252,11 +252,25 @@ gaps:
   temperature: 0.1
   max_tokens: 6144               # gpt-oss spends part of it on reasoning
 
+# --- Expertise (see docs/decisions/0046-expertise-finder.md) --------------
+experts:
+  search_candidates: 400         # chunks searched and reranked for a topic (~2.5 s)
+  min_score: 0.3                 # lowest rerank score that counts as a match
+  max_records: 100               # matched records kept from search, best first
+  recent_years: 5                # "recent" = this calendar year and the 4 before
+  max_k: 25                      # most people one find_expertise call returns
+  # `chatcde experts`
+  evidence_per_person: 3         # best-matching records shown and judged per person
+  prompt: "experts.v1"           # file <prompts.dir>/<name>.md
+  structured_output: true        # send the JSON schema as response_format
+  temperature: 0.1
+  max_tokens: 4096
+
 # --- Agent (see docs/decisions/0022-agent-loop.md) -------------------------
 agent:
   system_prompt: "agent_system.v5"   # file <prompts.dir>/<name>.md; v5: codes, years, denominators (#5)
   tools: [search_publications, get_publication, read_section, list_vocabulary,
-          count_by, find_gaps, coverage_report]
+          count_by, find_gaps, coverage_report, find_expertise]
   max_tool_calls: 16             # per question; then the model must answer (12 cut synthesis, #5)
   temperature: 0.2
   max_tokens: 8192               # per reply; reasoning uses part of it (4096 left qwen gap answers empty, #5)

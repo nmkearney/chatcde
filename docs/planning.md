@@ -121,7 +121,7 @@ The catalogue has 19 tools in six groups, seven of them needed for the first pro
 
 | Tool | Inputs | Returns | Phase |
 | --- | --- | --- | --- |
-| `find_expertise` | theme, method or region | researchers and units ranked by relevant outputs and recency, with BORIS IDs | 2 |
+| `find_expertise` | topic and/or filters (theme, method, region tags) | researchers ranked by matching records and recency, with counts, years, units, ORCID and BORIS IDs (built, #71, decision 0046) | 2 |
 | `get_project` | project ID or query | project metadata, funders, partners and linked outputs | 2 |
 | `collaboration_network` | unit or person, filters | co-authorship links, external partners, unit pairs with few joint outputs | 3 |
 
@@ -167,7 +167,7 @@ Fixed workflows script the core uses, so a mid-sized local model follows the sam
 | `chatcde gaps --scope … --dims theme,method` | The method and topic gap workflow for a unit, theme or region; ends with an evidence table and coverage caveats; conference items are left out unless included (decision 0018) |
 | `chatcde frontier --strength …` | CDE's record in an area, how the field is moving, and two or three candidate directions |
 | `chatcde brief --topic … [--region …]` | A cited synthesis of CDE findings |
-| `chatcde experts --topic …` | People, units and projects, with reasons |
+| `chatcde experts "…" [filters]` | People ranked by matching records, with units, evidence records and a reason each (projects once `get_project` exists; decision 0046) |
 
 Reference data is available both to the agent and on the command line:
 
