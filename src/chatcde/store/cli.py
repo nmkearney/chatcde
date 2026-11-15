@@ -227,6 +227,13 @@ def index_search_cmd(
     rerank: Annotated[
         bool, typer.Option("--rerank/--no-rerank", help="Rerank the candidates.")
     ] = True,
+    include_references: Annotated[
+        bool,
+        typer.Option(
+            "--include-references",
+            help="Keep reference-list chunks (left out by default, decision 0044).",
+        ),
+    ] = False,
     top_n: Annotated[
         int | None,
         typer.Option(min=1, help="Results to show (default retrieval.top_n)."),
@@ -267,6 +274,8 @@ def index_search_cmd(
         typer.echo("--mode must be hybrid, bm25 or vector.", err=True)
         raise typer.Exit(code=2)
     overrides: dict[str, object] = {"mode": mode, "rerank": rerank}
+    if include_references:
+        overrides["reference_cutoff"] = None
     if top_n is not None:
         overrides["top_n"] = top_n
     settings = SearchSettings.from_config(cfg, **overrides)

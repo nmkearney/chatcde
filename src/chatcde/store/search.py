@@ -10,6 +10,9 @@ The retrieval engine behind ``search_publications`` (B4). One query runs:
    scores are on different scales.
 4. **Reranking** of the fused candidates with the ``reranker`` role model, which
    reads query and passage together and is the most precise (and slowest) step.
+   Before reranking, full-text chunks that are reference lists
+   (:func:`chatcde.store.references.is_reference_list`, at
+   ``retrieval.reference_cutoff``) are left out of the fused candidates (#68).
 5. The best ``top_n`` chunks, with every intermediate rank and score kept, so
    ``chatcde evaluate questions`` (#28) can compare the stages.
 
@@ -29,7 +32,7 @@ import duckdb
 from pydantic import BaseModel, Field
 
 from chatcde.config import Config
-from chatcde.schemas import Chunk, Filters
+from chatcde.schemas import Chunk, Filters, TextSource
 from chatcde.store import bm25
 from chatcde.store.embeddings import (
     TABLE as EMBEDDINGS_TABLE,
@@ -41,6 +44,7 @@ from chatcde.store.embeddings import (
 )
 from chatcde.store.endpoint import EndpointClient
 from chatcde.store.filters import filter_record_ids
+from chatcde.store.references import is_reference_list
 
 log = logging.getLogger(__name__)
 
@@ -68,6 +72,9 @@ class SearchSettings(BaseModel):
     rerank_max_chars: int = Field(default=2000, ge=100)
     bm25_k1: float = 1.2
     bm25_b: float = 0.75
+    reference_cutoff: float | None = Field(
+        default=None, description="Leave out reference-list chunks (None: keep)"
+    )
 
     @classmethod
     def from_config(cls, cfg: Config, **overrides: Any) -> SearchSettings:
@@ -87,6 +94,7 @@ class SearchSettings(BaseModel):
             "rerank_max_chars": cfg.retrieval.rerank_max_chars,
             "bm25_k1": cfg.retrieval.bm25_k1,
             "bm25_b": cfg.retrieval.bm25_b,
+            "reference_cutoff": cfg.retrieval.reference_cutoff,
         }
         values.update(overrides)
         if "embedding_model" in overrides and "query_instruction" not in overrides:
@@ -273,18 +281,28 @@ def hybrid_search(
     fused = rrf_merge(
         [[h.chunk_id for h in bm25_hits], [h.chunk_id for h in vec_hits]],
         settings.rrf_k,
-    )[: settings.candidates]
+    )
+    chunks = _load_chunks(con, [cid for cid, _ in fused])
+    references = {
+        cid
+        for cid, (chunk, _) in chunks.items()
+        if chunk.source == TextSource.FULLTEXT
+        and is_reference_list(chunk.text, settings.reference_cutoff)
+    }
+    fused = [(cid, s) for cid, s in fused if cid not in references]
+    fused = fused[: settings.candidates]
     log.debug(
-        "search %r: %d BM25, %d vector, %d fused candidates",
+        "search %r: %d BM25, %d vector, %d reference-list chunks left out, "
+        "%d fused candidates",
         query,
         len(bm25_hits),
         len(vec_hits),
+        len(references),
         len(fused),
     )
     if not fused:
         return []
 
-    chunks = _load_chunks(con, [cid for cid, _ in fused])
     bm25_by_id = {h.chunk_id: (r, h.score) for r, h in enumerate(bm25_hits, 1)}
     vec_by_id = {h.chunk_id: (r, h.score) for r, h in enumerate(vec_hits, 1)}
     results: list[RankedChunk] = []

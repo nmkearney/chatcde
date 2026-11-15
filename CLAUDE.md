@@ -198,6 +198,8 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
 
 - Index on the real catalogue: **94,636 chunks**, all embedded (qwen3-embedding-4b, 1024 dims,
   2,958 requests in 11.5 min), BM25 360,296 terms / 11.4 M postings (45 s).
+- Search leaves out reference-list chunks (reference score >= `retrieval.reference_cutoff`
+  0.06, scored at query time): 11,704 of 92,037 full-text chunks (decision 0044).
 - `chatcde export` (decision 0032): both editions in `data/bundles/`, ~382 MB each, about
   35 s per edition. **Full and open hold the same content today**: all 1,542 full texts
   are open access. The open filter only drops state rows for restricted records.
