@@ -343,19 +343,159 @@ def unwrap_json_strings(model: type[BaseModel], args: dict[str, Any]) -> dict[st
     return out
 
 
+def _list_fields() -> dict[str, str]:
+    """Singular spellings of the list fields of ``Filters`` -> the field name.
+
+    ``impact_area`` -> ``impact_areas``, ``country`` -> ``countries``,
+    ``justice_lens`` -> ``justice_lenses``.
+    """
+    out: dict[str, str] = {}
+    for name, info in Filters.model_fields.items():
+        if getattr(info.annotation, "__origin__", None) is not list:
+            continue
+        if name.endswith("ies"):
+            out[name[:-3] + "y"] = name
+        if name.endswith("es"):
+            out[name[:-2]] = name
+        if name.endswith("s"):
+            out[name[:-1]] = name
+    return {k: v for k, v in out.items() if k not in Filters.model_fields}
+
+
+#: Keys models use for a year or a year range (gpt-oss, baseline 2026-11-15).
+YEAR_KEYS = ("year", "years", "pub_year", "publication_year", "year_range")
+_FROM_KEYS = ("gte", "ge", "min", "from", "start")
+_TO_KEYS = ("lte", "le", "max", "to", "end")
+
+
+def _as_year(value: Any) -> int | None:
+    """``value`` as a year, if it is one (``2020`` or ``"2020"``)."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int) and 1000 <= value <= 9999:
+        return value
+    if isinstance(value, str) and value.strip().isdigit() and len(value.strip()) == 4:
+        return int(value)
+    return None
+
+
+def _year_range(value: Any) -> tuple[int | None, int | None] | None:
+    """The (from, to) years one spelling stands for; ``None`` if it is not clear.
+
+    ``2020`` is that year only; ``[2020, 2026]`` (two years, or a consecutive
+    list) a range; ``{"gte": 2020}`` an open range. Lists with gaps are not a
+    range, so they are left for the validation error.
+    """
+    if (y := _as_year(value)) is not None:
+        return y, y
+    if isinstance(value, list) and value:
+        years = [_as_year(v) for v in value]
+        if None in years:
+            return None
+        ys = sorted(y for y in years if y is not None)
+        if len(ys) == 2 or ys == list(range(ys[0], ys[-1] + 1)):
+            return ys[0], ys[-1]
+        return None
+    if isinstance(value, dict) and value:
+        lo = [_as_year(value[k]) for k in _FROM_KEYS if k in value]
+        hi = [_as_year(value[k]) for k in _TO_KEYS if k in value]
+        if "gt" in value and (y := _as_year(value["gt"])) is not None:
+            lo.append(y + 1)
+        if "lt" in value and (y := _as_year(value["lt"])) is not None:
+            hi.append(y - 1)
+        known = {*_FROM_KEYS, *_TO_KEYS, "gt", "lt"}
+        if set(value) - known or None in lo + hi or len(lo) > 1 or len(hi) > 1:
+            return None
+        return (lo[0] if lo else None), (hi[0] if hi else None)
+    return None
+
+
+def repair_filters(filters: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """Read unambiguous misspellings of filter keys; say what was read how.
+
+    gpt-oss writes ``impact_area`` for ``impact_areas`` (17 calls in the
+    baseline of 2026-11-15, despite "did you mean") and ``year: {"gte": 2020}``
+    for ``year_from`` (16 calls; it then told the user that years cannot be
+    filtered). A key is repaired only where one reading is possible:
+
+    * the singular of a list field (``impact_area`` -> ``impact_areas``), when the
+      list field is not given too;
+    * a single value for a list field becomes a one-item list;
+    * a year spelling (:data:`YEAR_KEYS`) that :func:`_year_range` can read becomes
+      ``year_from`` / ``year_to``, when neither is given.
+
+    Anything else is left as it is, so validation still rejects it (decision
+    0034). Repairs are never silent: each one is returned as a note, which the
+    tool result carries (decision 0041).
+
+    Returns:
+        The repaired filters and one note per repair.
+    """
+    out = dict(filters)
+    notes: list[str] = []
+    singular = _list_fields()
+    for key in list(filters):
+        target = singular.get(key)
+        if target and target not in out:
+            out[target] = out.pop(key)
+            notes.append(f"filters.{key} read as {target}")
+    for key in YEAR_KEYS:
+        if key not in out or "year_from" in out or "year_to" in out:
+            continue
+        span = _year_range(out[key])
+        if span is None:
+            continue
+        del out[key]
+        lo, hi = span
+        if lo is not None:
+            out["year_from"] = lo
+        if hi is not None:
+            out["year_to"] = hi
+        notes.append(
+            f"filters.{key} read as year_from={lo}, year_to={hi}"
+            if lo is not None and hi is not None
+            else f"filters.{key} read as "
+            + (f"year_from={lo}" if lo is not None else f"year_to={hi}")
+        )
+    for name, value in list(out.items()):
+        info = Filters.model_fields.get(name)
+        is_list = info is not None and getattr(info.annotation, "__origin__", None)
+        if (
+            is_list is list
+            and isinstance(value, str | int)
+            and not isinstance(value, bool)
+        ):
+            out[name] = [value]
+            notes.append(f"filters.{name} read as a list: [{value!r}]")
+    return out, notes
+
+
+#: Hints for keys that are not filters but say what the model wanted.
+_KEY_HINTS = {
+    "record_id": "to look inside one record use get_publication or read_section",
+    "record_ids": "to look inside one record use get_publication or read_section",
+}
+
+
 def _problem(model: type[BaseModel], error: Any) -> str:
     """One validation error as text, with a suggestion for a misspelt field.
 
     gpt-oss writes ``filters.impact_area`` for ``impact_areas``; naming the
-    right field saves the model a call (#67).
+    right field saves the model a call (#67). An unknown filter key with no
+    close match gets the list of valid keys, or a hint on what to do instead.
     """
     loc = [str(p) for p in error["loc"]]
     text = f"{'.'.join(loc) or 'arguments'}: {error['msg']}"
     if error.get("type") == "extra_forbidden" and loc:
-        fields = Filters.model_fields if loc[0] == "filters" else model.model_fields
+        in_filters = loc[0] == "filters"
+        fields = Filters.model_fields if in_filters else model.model_fields
         close = difflib.get_close_matches(loc[-1], list(fields), n=1, cutoff=0.75)
         if close:
             text += f" (did you mean {close[0]!r}?)"
+        elif in_filters and loc[-1] in _KEY_HINTS:
+            text += f" ({_KEY_HINTS[loc[-1]]})"
+        elif in_filters:
+            text += f" (valid filter keys: {', '.join(fields)})"
     return text
 
 
@@ -371,7 +511,10 @@ def run_tool(
     """Validate the model's arguments, call the tool and render the outcome.
 
     Never raises for the model's mistakes or the tool's refusals: they come back
-    as ``ok=False`` with an error the model can read and act on. Unexpected
+    as ``ok=False`` with an error the model can read and act on. Unambiguous
+    misspellings of filter keys are repaired first (:func:`repair_filters`); the
+    result then starts with a note saying how they were read, and
+    ``ToolOutcome.arguments`` holds the repaired arguments. Unexpected
     exceptions are logged with their traceback and reported briefly. With
     ``cut=False`` (counting tools), a result over ``max_chars`` is an error
     asking for fewer cells, never a partial table (decision 0036).
@@ -399,10 +542,16 @@ def run_tool(
             args = parsed
     except json.JSONDecodeError as exc:
         return failed(f"arguments are not valid JSON: {exc}")
+    args = unwrap_json_strings(spec.args_model, args)
+    notes: list[str] = []
+    if (
+        isinstance(args.get("filters"), dict)
+        and "filters" in spec.args_model.model_fields
+    ):
+        repaired, notes = repair_filters(args["filters"])
+        args = {**args, "filters": repaired}
     try:
-        validated = spec.args_model.model_validate(
-            unwrap_json_strings(spec.args_model, args)
-        )
+        validated = spec.args_model.model_validate(args)
     except ValidationError as exc:
         problems = "; ".join(_problem(spec.args_model, e) for e in exc.errors())
         return failed(f"invalid arguments for {spec.name}: {problems}")
@@ -428,6 +577,9 @@ def run_tool(
     except ResultTooLarge as exc:
         log.warning("tool %s: result not sent (%s)", spec.name, exc)
         return failed(too_large_message(spec.name, data, exc))
+    if notes:
+        log.info("tool %s: %s", spec.name, "; ".join(notes))
+        content = f"[Note: {'; '.join(notes)}. Use these names next time.]\n{content}"
     return ToolOutcome(
         spec.name,
         args,
