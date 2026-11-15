@@ -1,0 +1,150 @@
+# Held-out test questions (#97, decision 0043). Same format as tests/questions.yaml
+# (decision 0025). Run once with both models:
+#   chatcde evaluate questions --file tests/questions_heldout.yaml --models both --runs 1
+#
+# Written on 2026-11-15, after the M1 fixes (#91-#96), on topics the tuned questions do not
+# cover (Ethiopia, Bolivia, Switzerland, urban settings, Central Asia). They were not used
+# to tune the agent, its prompts or its tools. Do not change the code to pass them; once
+# a fix is made because of one of them, it stops being held out and moves to
+# tests/questions.yaml.
+# Data state: 3,003 records, tag.v5, vocabulary 0.4, tools.min_confidence 0.5. Gaps leave
+# conference items out (decision 0018).
+version: 1
+questions:
+  # --- lookup ------------------------------------------------------------------
+  - id: ho-lookup-hampi-qora
+    question: "Who wrote the book 'Hampi Qora' on medicinal plants in Bolivia, and in which communities was it made?"
+    kind: lookup
+    expect:
+      records_all: [e7859e12-6ee8-45dc-add6-4c750bc77c06]
+      mentions: ["Mathez-Stiefel", "Waca Playa"]
+    notes: >
+      2018 book, Mathez-Stiefel and Brand: "Hampi Qora: Nuestras plantas medicinales en
+      las comunidades de Waca Playa, Cochabamba, Bolivia".
+
+  - id: ho-lookup-cocoa-carbon
+    question: "Who led CDE's study of carbon stocks in cocoa production systems in Alto Beni, Bolivia, and in which journal was it published?"
+    kind: lookup
+    expect:
+      records_all: [d326c877-13b8-4ede-a42c-06c430c7aa31]
+      mentions: ["Jacobi", "Agroforestry Systems"]
+    notes: >
+      `chatcde show d326c877-13b8-4ede-a42c-06c430c7aa31`: 2014 article in Agroforestry
+      Systems, first author Johanna Jacobi. `numbers: [2014]` was removed after the first
+      run (decision 0045): the question does not ask for the year.
+
+  # --- search ------------------------------------------------------------------
+  - id: ho-search-terrace-deposition
+    question: "How much eroded soil is deposited on terraced cropland in the Ethiopian Highlands, according to CDE research?"
+    kind: search
+    expect:
+      records_any: [68f72c3e-c0d0-43c9-b08d-aef7ccdbbbc2]
+      numbers: [8, 11]
+    notes: >
+      Minchet catchment (2017): about 8-11 t/ha deposited per season, 54-74% of the soil
+      lost; annual soil loss 32-37 t/ha.
+
+  - id: ho-search-prosopis-afar
+    question: "What has the spread of Prosopis cost in ecosystem services in Ethiopia's Afar Region?"
+    kind: search
+    expect:
+      records_any: [3b9a7400-eef2-4615-b52c-a07d3e0d4191]
+      numbers: [602]
+    notes: >
+      2019 article (Science of the Total Environment): average loss of about US$ 602 million
+      (range 112-1,091 million) over 31 years; Prosopis spread by about 31,127 ha a year.
+
+  # --- count -------------------------------------------------------------------
+  - id: ho-count-ethiopia
+    question: "How many CDE publications deal with Ethiopia, and how many of them are about sustainable land systems?"
+    kind: count
+    expect:
+      tools: [count_by]
+      numbers: [152, 135]
+    notes: >
+      `chatcde count impact_area --country ETH`: 152 records, SL 135, SG 54, TE 23, JE 11.
+
+  - id: ho-count-switzerland-german
+    question: "How many CDE publications are about Switzerland, and how many of those are written in German?"
+    kind: count
+    expect:
+      tools: [count_by]
+      numbers: [614, 259]
+    notes: >
+      `chatcde count impact_area --country CHE`: 614 records; with `--lang de` 259 (German
+      among the BORIS language codes; `me` records are not counted as German).
+      coverage_report's by_language counts the first listed language only: de 255
+      (decision 0045, #98).
+
+  # --- gaps --------------------------------------------------------------------
+  - id: ho-gaps-urban-methods
+    question: "Which kinds of methods has CDE rarely used in its research on urban settings?"
+    kind: gaps
+    expect:
+      tools: [find_gaps]
+      mentions_any: ["biophysical"]
+      numbers: [6]
+    notes: >
+      `chatcde count setting method --gaps` (group level): the only cell is
+      SET-G-urban-settings-and-institutions x MET-G-biophysical, 6 records where 33.3 were
+      expected.
+
+  - id: ho-gaps-central-asia-sdgs
+    question: "Which SDGs does CDE's research in Central Asia rarely address?"
+    kind: gaps
+    expect:
+      tools: [find_gaps]
+      mentions_any: ["SDG 16", "SDG16", "Goal 16", "Peace"]
+    notes: >
+      `chatcde count region sdg --gaps`: Central Asia x 16, 1 record where 10.2 were
+      expected. Filtering find_gaps by the region compares Central Asia with itself
+      (decision 0042); the row has to be read from the region x sdg table.
+
+  # --- synthesis ---------------------------------------------------------------
+  - id: ho-synth-food-systems-bolivia
+    question: "What has CDE learned about the sustainability and resilience of food systems in Bolivia?"
+    kind: synthesis
+    expect:
+      tools: [search_publications]
+      records_any:
+        - 039634cd-cbed-49d5-b7bc-b2961cb4958d
+        - 534b5d84-05b2-4d64-ade6-693818e128f4
+        - 8ad5295e-ad31-4d5e-83e6-c0b0381dd21a
+        - b1a0b21c-d1d3-491a-9615-bc1eb71a8631
+        - 01e61c4d-00fe-4844-93cd-a60f865d81b7
+        - 4d41cb4b-5920-4b3f-a32e-034a9dd8a5aa
+        - 6b30df9d-69f6-48b8-9d5f-61d08225cdd3
+        - 7f424812-c859-4c05-9fbf-fd3d90c260e9
+        - a606f656-d89d-4ce9-b0ec-7cf2cb3c7dd2
+        - ce6f8122-4e49-49e3-b84c-5a7242b7be66
+        - efe50623-810c-469e-91d0-359a3969c1d6
+      mentions_any: ["agroecological", "agroindustrial", "agro-industrial", "Guaraní", "participatory guarantee"]
+    notes: >
+      Full-text records with "food" and Bolivia in the title (2016-2022): the Kenya-Bolivia
+      food sustainability project (five dimensions; agroecological systems score highest),
+      power relations, participatory guarantee systems.
+
+  - id: ho-synth-ethiopia-swc
+    question: "What does CDE research show about soil and water conservation in the Ethiopian Highlands?"
+    kind: synthesis
+    expect:
+      tools: [search_publications]
+      records_any:
+        - 245a8464-c14e-4248-bb19-79b8e49cc054
+        - 8f52992c-d914-45a9-a409-5022f6791818
+        - b8699da6-b922-494e-9a2a-1711be4297d8
+        - 292ec77d-a9a4-4723-ab76-48ac6fad3684
+        - 5db0d35c-9585-40e3-8459-144688e92b8a
+        - f2872776-e881-499d-b5cd-8f565eb4e205
+        - 8a6ea225-3a77-427c-bf06-5f6cde2c74b9
+        - 0bd7712d-ad8b-4b01-a3b8-c682c497a1c4
+        - 0ab68696-cf01-4694-8ff5-5d767ac3cc48
+        - 68f72c3e-c0d0-43c9-b08d-aef7ccdbbbc2
+        - 55705821-cda3-4c35-9414-126a80a17fe4
+        - 79865560-8a52-46f1-8c7a-520f0fc92e03
+        - b9d74c5d-0707-4bf4-b676-5b8b4de4e861
+      mentions_any: ["terrace", "erosion", "soil loss"]
+    notes: >
+      Full-text records with Ethiopia and conservation, erosion, soil loss or SLM in the
+      title (1978-2025), e.g. Minchet terraces, community labour mobilisation (42% less
+      soil loss), adoption factors, the ELD case study.
