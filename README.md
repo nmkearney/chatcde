@@ -219,7 +219,10 @@ with confidence of at least `--min-confidence` count; the default, `tools.min_co
 in the config (0.5), counts explicit and inferred tags but not weak ones (decision 0038).
 Every result states its
 denominator: the number of matching records and how many of them have no tag. With two
-dimensions, the matrix counts only records tagged on both.
+dimensions, the matrix counts only records tagged on both. A filter on a counted
+dimension limits its rows to the filtered terms: `chatcde count sub_area --sub-area SG-a
+--sub-area SG-b` has two rows. In gap analysis, a filter that leaves one row or column is
+an error, since the area would be compared only with itself (decision 0042).
 
 **Groups.** method, data_type, setting, system and actors sort their terms into groups
 (e.g. `MET-G-participatory-and-transdisciplinary`), and additional_sub_area's terms

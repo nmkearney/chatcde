@@ -16,6 +16,10 @@ Counting rules:
   tagged on *both*; ``untagged_records`` is the rest of the matching records
   (``total_records - untagged_records`` is the base of the matrix). Pairs that
   never occur are not listed as cells: their count is 0.
+* **A filter on a counted dimension limits its rows (or columns)** to the filtered
+  terms, or at group level to the groups holding them (#83, decision 0042):
+  ``count_by(row=sub_area, filters={sub_areas: [SG-a, SG-b]})`` has two rows, not
+  every sub-area those records also carry. Totals stay over the filtered records.
 
 Gaps compare each cell with the count expected if the two dimensions were
 independent, ``row_total * col_total / base``; cells with a small expected count
@@ -41,7 +45,7 @@ from chatcde.schemas import (
     Level,
     VocabTerm,
 )
-from chatcde.store.filters import FilterError, filter_record_ids
+from chatcde.store.filters import TAG_FIELDS, FilterError, filter_record_ids
 from chatcde.tools.context import ToolContext, ToolError
 from chatcde.tools.vocabulary import (
     dimension_entries,
@@ -107,6 +111,32 @@ def _sorted_totals(counts: dict[str, int]) -> dict[str, int]:
     return dict(sorted(counts.items(), key=lambda t: (-t[1], t[0])))
 
 
+def _filter_values(filters: Filters, dimension: Dimension) -> set[str] | None:
+    """The (expanded) codes ``filters`` sets for ``dimension``, lower case; or None.
+
+    Impact areas are the parents of sub-areas (``SG-a`` -> ``SG``, #49), so a
+    sub-area filter limits impact-area rows to the parents of its sub-areas.
+    """
+    for name, dim in TAG_FIELDS.items():
+        if dim == dimension and getattr(filters, name):
+            return {str(v).lower() for v in getattr(filters, name)}
+    if dimension == Dimension.IMPACT_AREA and filters.sub_areas:
+        return {v.split("-")[0].lower() for v in filters.sub_areas}
+    return None
+
+
+def _limit(tagged: dict[str, set[str]], values: set[str] | None) -> dict[str, set[str]]:
+    """Keep only the filtered terms of each record (#83); all if no filter."""
+    if values is None:
+        return tagged
+    out = {}
+    for rid, terms in tagged.items():
+        kept = {t for t in terms if t.lower() in values}
+        if kept:
+            out[rid] = kept
+    return out
+
+
 def _grouped(
     tagged: dict[str, set[str]], mapping: dict[str, str]
 ) -> dict[str, set[str]]:
@@ -138,7 +168,7 @@ def count_matrix(
     groups = groups or {}
     ids = _base_ids(con, f)
     _require_tags(con)
-    rows = _tagged(con, row, ids, f.min_confidence)
+    rows = _limit(_tagged(con, row, ids, f.min_confidence), _filter_values(f, row))
     if row in groups:
         rows = _grouped(rows, groups[row])
     cells: dict[tuple[str, str | None], list[str]] = {}
@@ -151,6 +181,7 @@ def count_matrix(
                 cells.setdefault((t, None), []).append(rid)
     else:
         cols = _tagged(con, col, ids, f.min_confidence)
+        cols = _limit(cols, _filter_values(f, col))
         if col in groups:
             cols = _grouped(cols, groups[col])
         base = {rid: rows[rid] for rid in rows.keys() & cols.keys()}
@@ -464,7 +495,9 @@ def gap_report(
             ``gaps.exclude_types`` from the config, ``[]`` keeps all types.
 
     Raises:
-        ToolError: Same dimension twice, negative ``max_ratio``, no records or tags.
+        ToolError: Same dimension twice, negative ``max_ratio``, no records or
+            tags, or a filter that leaves one of the two dimensions a single row
+            or column (decision 0042).
     """
     if row == col:
         raise ToolError("find_gaps needs two different dimensions")
@@ -477,6 +510,15 @@ def gap_report(
     with ctx.catalogue() as con:
         basis = gap_basis(con, filters, types)
         matrix = count_matrix(con, row, col, basis.filters, groups=groups)
+    for dim, totals in ((row, matrix.row_totals), (col, matrix.col_totals)):
+        if _filter_values(filters, dim) is not None and len(totals) < 2:
+            only = ", ".join(totals) or "nothing"
+            raise ToolError(
+                f"the filters keep only {only} of {dim.value}, one of the two "
+                "dimensions compared, so it would be compared only with itself. "
+                f"Drop the {dim.value} filter and read the cells of {only} in the "
+                "result (decision 0042)."
+            )
     gaps = gap_cells(matrix, max_ratio=max_ratio, min_expected=cfg.min_expected)
     return GapReport(basis, matrix, gaps, cfg.min_expected)
 
