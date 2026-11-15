@@ -1,7 +1,7 @@
-"""Phase 1 tool signatures (DRAFT, to be agreed on day 1).
+"""Tool signatures: the agreed contract between the stores and the agent.
 
-These are the seven tools the prototype needs. Each is implemented in its own
-module and called here with the active
+The seven phase-1 tools the prototype needs, plus ``find_expertise`` (#71).
+Each is implemented in its own module and called here with the active
 :class:`~chatcde.tools.context.ToolContext` (config, catalogue, endpoint), so the
 signatures stay as agreed. Tools not built yet raise ``NotImplementedError``.
 
@@ -280,4 +280,7 @@ def find_expertise(
         and the BORIS IDs of their matching records; ``matched_records`` is the
         denominator.
     """
-    raise NotImplementedError("find_expertise is built in #71")
+    from chatcde.tools import expertise
+    from chatcde.tools.context import get_context
+
+    return expertise.find_expertise(get_context(), topic, filters, k, cde_only)

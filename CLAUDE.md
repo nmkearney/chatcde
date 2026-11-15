@@ -239,6 +239,13 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
   tuned set instead.
 - GPUStack refuses (HTTP 403) or times out when the VPN drops; drop those result lines and rerun.
 
+## Expertise finder (`chatcde experts`, #71, 2026-11-15)
+
+- Authors merged into people by ORCID, name key and unique initials: 14,298 rows -> 5,489
+  people, 279 CDE (person-level: CDE on at least one record). No BORIS person ID is stored.
+- Topic match: 400 reranked chunks, best passage >= 0.3, at most 100 records (decision 0046).
+- 3 expertise questions in `tests/questions.yaml` (kind `experts`).
+
 ## Architecture
 
 ```
@@ -335,7 +342,8 @@ between two LLM runs.
 
 - **Prototype core:** `search_publications`, `get_publication`, `read_section`,
   `list_vocabulary`, `count_by`, `find_gaps`, `coverage_report`
-- **If time allows for the demonstration:** `trend`, `find_expertise`, `search_field`,
+- **Built after the core (#71):** `find_expertise` (decision 0046; `chatcde experts`).
+- **If time allows for the demonstration:** `trend`, `search_field`,
   `compare_with_field`
 - **Later:** `find_similar`, `emerging_topics`, `get_project`, `spatial_footprint`,
   `report_issue`, `collaboration_network`, `find_datasets`, `query_layer`

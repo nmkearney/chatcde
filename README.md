@@ -426,9 +426,37 @@ chatcde gaps --level term                            # single methods, not metho
 
 Every number in the table comes from step 1; the model only judges. Record IDs it
 cites outside the cell's evidence are dropped and shown in red. The prompt is
-`src/chatcde/prompts/gaps.v1.md`, and the settings are in the `gaps` section of the
+`src/chatcde/prompts/gaps.v2.md`, and the settings are in the `gaps` section of the
 config. `--alternative`, `--log FILE` and `--json` work as for `ask`. See
 `docs/decisions/0024-gaps-workflow.md`.
+
+## Find experts
+
+`chatcde experts` lists the CDE researchers who have worked on a topic, ranked by
+their matching records:
+
+```bash
+chatcde experts "pastoralism"                       # search the whole catalogue
+chatcde experts "pastoralism" --region CDE-EAF      # search within a tag filter
+chatcde experts --tag actors:ACT-pastoralists       # no topic: exact tag counts
+chatcde experts "telecoupling" -k 20 --all-authors --no-llm --json > experts.json
+```
+
+1. Code finds the matching records: those passing the filters and, with a topic, those
+   the search finds for it with a rerank score of at least `experts.min_score` (at most
+   `experts.max_records`).
+2. Code merges author spellings into people (by ORCID, name and unique initials) and
+   ranks them by matching records, then recent ones, then latest year. Only people
+   with a CDE affiliation on at least one record are listed unless you pass
+   `--all-authors`.
+3. Each person's best-matching records are shown as numbered sources, with caveats
+   (metadata-only records, records without a CDE author, merges by initials).
+4. The agent model writes a one-line reason per person from those records (skip it
+   with `--no-llm`).
+
+The agent can call the same tool, `find_expertise`, from `ask` and `chat`. The settings
+are in the `experts` section of the config; see
+`docs/decisions/0046-expertise-finder.md`.
 
 ## Evaluate the assistant
 

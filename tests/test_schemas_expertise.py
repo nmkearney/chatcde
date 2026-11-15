@@ -45,10 +45,3 @@ def test_result_round_trips() -> None:
 def test_expert_needs_counts() -> None:
     with pytest.raises(ValidationError):
         Expert.model_validate({"name": "X", "is_cde": True})
-
-
-def test_find_expertise_signature_is_a_stub_until_built() -> None:
-    from chatcde.tools import core
-
-    with pytest.raises(NotImplementedError):
-        core.find_expertise("pastoralism")

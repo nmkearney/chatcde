@@ -422,6 +422,21 @@ class GapsConfig(_Section):
     max_tokens: int = Field(ge=256)
 
 
+class ExpertsConfig(_Section):
+    """``find_expertise`` and the ``chatcde experts`` workflow (decision 0046)."""
+
+    search_candidates: int = Field(ge=1)
+    min_score: float = Field(ge=0.0)
+    max_records: int = Field(ge=1)
+    recent_years: int = Field(ge=1)
+    max_k: int = Field(ge=1)
+    evidence_per_person: int = Field(ge=1)
+    prompt: str
+    structured_output: bool
+    temperature: float = Field(ge=0)
+    max_tokens: int = Field(ge=256)
+
+
 class AgentConfig(_Section):
     """The tool-calling agent (decision 0022)."""
 
@@ -484,6 +499,7 @@ class Config(_Section):
     embedding: EmbeddingConfig
     tools: ToolsConfig
     gaps: GapsConfig
+    experts: ExpertsConfig
     agent: AgentConfig
     evaluation: EvaluationConfig
     logging: LoggingConfig

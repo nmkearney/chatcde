@@ -39,7 +39,7 @@ from chatcde.store.endpoint import EndpointClient, EndpointError
 
 log = logging.getLogger(__name__)
 
-Kind = Literal["lookup", "search", "count", "gaps", "synthesis"]
+Kind = Literal["lookup", "search", "count", "gaps", "synthesis", "experts"]
 
 #: Characters of the answer kept in each score, for the tables.
 EXCERPT_CHARS = 300
