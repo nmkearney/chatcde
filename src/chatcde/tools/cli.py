@@ -120,6 +120,13 @@ def search(
     full: Annotated[
         bool, typer.Option("--full", help="Print whole passages, not snippets.")
     ] = False,
+    include_references: Annotated[
+        bool,
+        typer.Option(
+            "--include-references",
+            help="Keep reference-list passages (left out by default, decision 0044).",
+        ),
+    ] = False,
     as_json: JsonOption = False,
 ) -> None:
     """Search publications and show matching passages with BORIS IDs.
@@ -144,7 +151,11 @@ def search(
         sdgs=sdg or [],
         min_confidence=min_confidence,
     )
-    passages = _call(ctx.obj, lambda: core.search_publications(query, filters, k))
+    cfg = ctx.obj
+    if include_references:
+        retrieval = cfg.retrieval.model_copy(update={"reference_cutoff": None})
+        cfg = cfg.model_copy(update={"retrieval": retrieval})
+    passages = _call(cfg, lambda: core.search_publications(query, filters, k))
     if as_json:
         typer.echo(_dump(passages))
         return

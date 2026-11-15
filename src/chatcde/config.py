@@ -377,6 +377,12 @@ class RetrievalConfig(_Section):
     rerank_max_chars: int = Field(ge=100)
     bm25_k1: float = Field(ge=0)
     bm25_b: float = Field(ge=0, le=1)
+    reference_cutoff: float | None = Field(
+        default=None,
+        ge=0,
+        description="Full-text chunks with a reference score at least this are "
+        "reference lists, left out of search (decision 0044); null keeps them",
+    )
 
 
 class EmbeddingConfig(_Section):

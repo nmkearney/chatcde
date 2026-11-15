@@ -181,6 +181,11 @@ chatcde read 2760e535-c973-4524-ab84-3a1c71b9bf3a 2 3   # pages 2-3, verbatim
 when there is one, otherwise BORIS's own. Like `index search`, it needs the endpoint
 for the query embedding and the reranker. `show` and `read` run locally.
 
+Reference lists are left out of search: a full-text passage whose reference score
+(citation patterns per word) reaches `retrieval.reference_cutoff` (0.06) is skipped, about
+13% of full-text chunks. `--include-references` keeps them; `read` still shows every page
+(decision 0044).
+
 `read` returns the full-text chunks that overlap the pages, so neighbouring passages
 share a few sentences. It reads at most `tools.max_section_pages` (10) pages per call,
 and `search` returns at most `tools.max_k` (20) passages. Records without parsed full

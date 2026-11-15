@@ -220,6 +220,7 @@ retrieval:
   rerank_max_chars: 2000         # cut each passage to fit the reranker's 1K-token context
   bm25_k1: 1.2                   # BM25 term-frequency saturation
   bm25_b: 0.75                   # BM25 length normalisation
+  reference_cutoff: 0.06         # full-text chunks scoring >= this are reference lists, left out of search; null keeps them (0044)
 
 # --- Embeddings (see docs/decisions/0012-embeddings.md) ---------------------
 embedding:
