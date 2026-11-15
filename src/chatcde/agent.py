@@ -62,6 +62,27 @@ CITE_RE = re.compile(
     r"\s*(?=[;,]|$)"
 )
 
+#: Message sent once when the answer is a tool call written as text. qwen3.8
+#: sometimes writes ``<tool_call> <function=...>`` as its whole answer when the
+#: endpoint does not parse it as a call (#5 rerun, 2026-11-15).
+TOOL_CALL_NOTE = (
+    "[Your last message was a tool call written as text, so it was not run.] "
+    "Call tools through the tool interface, or answer the question now."
+)
+
+
+def could_be_record(ref: str) -> bool:
+    """Whether a cited ID could be a record, so an unknown one is a real error.
+
+    Record IDs, DOIs and handles all hold digits. References without any, such
+    as tool names (``count_by``, ``find_gaps``), ``gap-result`` or vocabulary
+    codes (``SG-d``), are citations of counts, which the prompt forbids: they
+    are removed from the answer without asking the model again (#5, decision
+    0043). Unknown IDs with digits may be made-up records and stay errors.
+    """
+    return any(ch.isdigit() for ch in ref)
+
+
 #: Message appended when the tool budget is used up.
 BUDGET_NOTE = (
     "[The tool-call budget for this question is used up.] Answer now with the "
@@ -221,6 +242,10 @@ _REFERENCE_CHARS = str.maketrans(
 #: Any bracket group, in ASCII, lenticular or full-width brackets (gpt-oss writes
 #: ``【BORIS:x】``, 2026-11-11).
 _ANY_GROUP_RE = re.compile(r"[\[【［〔]([^\[\]【】［］〔〕]*)[\]】］〕]")
+#: A bracket group with the whitespace before it (dropped with an empty group).
+_SPACED_GROUP_RE = re.compile(r"(\s*)" + _ANY_GROUP_RE.pattern)
+#: ``BORIS:[]``, a reference to nothing (gpt-oss, #5 rerun).
+_EMPTY_REF_RE = re.compile(r"BORIS:\s*\[\s*\]")
 #: A full record UUID, the form of every BORIS record ID.
 _UUID_RE = re.compile(
     r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", re.IGNORECASE
@@ -277,15 +302,21 @@ def normalise_references(answer: str) -> str:
     neither resolved nor checked, so its record is lost (#85). This one step
     handles all forms seen so far: typographic hyphens and spaces, lenticular
     and full-width brackets, decoration (``[< BORIS:x >]``, ``**BORIS:x**``),
-    German pages (``S. 5``) and bare record UUIDs in brackets. Groups that hold
-    no reference (``[1]``, ``【note】``, Markdown links) are left as written.
+    German pages (``S. 5``) and bare record UUIDs in brackets. A ``BORIS:``
+    group that names no ID (``【BORIS:[]】``) is removed. Groups that hold no
+    reference (``[1]``, ``【note】``, Markdown links) are left as written.
     """
 
     def replace(m: re.Match[str]) -> str:
-        refs = _references_in(m.group(1))
-        return "[" + "; ".join(refs) + "]" if refs else m.group(0)
+        refs = _references_in(m.group(2))
+        if refs:
+            return m.group(1) + "[" + "; ".join(refs) + "]"
+        if "BORIS:" in m.group(2):
+            return ""  # a reference naming nothing, e.g. 【BORIS:[]】 (gpt-oss)
+        return m.group(0)
 
-    return _ANY_GROUP_RE.sub(replace, answer)
+    answer = _EMPTY_REF_RE.sub("BORIS:", answer)
+    return _SPACED_GROUP_RE.sub(replace, answer)
 
 
 def _ref_id(m: re.Match[str]) -> str:
@@ -522,6 +553,7 @@ class Agent:
         usage: dict[str, int] = {}
         stop: StopReason = "answered"
         answer = ""
+        nudged = False  # TOOL_CALL_NOTE sent
         rounds = 0
 
         def complete(with_tools: bool) -> tuple[dict[str, Any], str | None]:
@@ -571,11 +603,23 @@ class Agent:
                     stop = "budget"
                 continue
             answer = (message.get("content") or "").strip()
+            if "<tool_call>" in answer and not nudged:
+                nudged = True
+                log.info("answer is a tool call written as text; asking once more")
+                self.messages += [
+                    {"role": "assistant", "content": answer},
+                    {"role": "user", "content": TOOL_CALL_NOTE},
+                ]
+                continue
             if finish == "length":
                 stop = "length"
             break
         answer = normalise_references(answer)
         cites, unknown = extract_citations(self.tool_ctx, answer, self._seen)
+        not_records = {u for u in unknown if not could_be_record(u)}
+        if not_records:
+            log.info("references that are not records removed: %s", sorted(not_records))
+        unknown = [u for u in unknown if could_be_record(u)]
         retried: list[str] = []
         if unknown and self.settings.citation_retry:
             retried = unknown
@@ -593,7 +637,9 @@ class Agent:
                 answer = fixed
                 stop = "length" if finish == "length" else stop
                 cites, unknown = extract_citations(self.tool_ctx, answer, self._seen)
-        answer = strip_references(answer, set(unknown))
+                not_records |= {u for u in unknown if not could_be_record(u)}
+                unknown = [u for u in unknown if could_be_record(u)]
+        answer = strip_references(answer, set(unknown) | not_records)
         self.messages.append({"role": "assistant", "content": answer})
         if unknown or any(not c.from_tools for c in cites):
             log.warning(

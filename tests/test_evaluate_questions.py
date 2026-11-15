@@ -153,6 +153,14 @@ def test_missing_file(tmp_path: Path):
 # --- scoring --------------------------------------------------------------------------
 
 
+def test_a_more_precise_number_matches():
+    """#5 rerun: "28.1%" answers an expected 28; 28.5 needs its decimal."""
+    q = Question(id="q", question="?", kind="search", expect={"numbers": [28, 28.5]})
+    assert score_answer(q, result("Lost 28.1% and 28.54%.")).passed
+    assert not score_answer(q, result("Lost 28.1% and 29%.")).passed
+    assert not score_answer(q, result("Lost 27.4% and 28.5%.")).passed
+
+
 def test_numbers_in():
     text = "We found 1,234 records, 1'500 and 2 000 more, 12.5% [BORIS:abc-99, p. 7]."
     assert numbers_in(text) == {1234.0, 1500.0, 2000.0, 12.5}
@@ -192,7 +200,7 @@ def test_score_failures_are_named():
     r = result(
         "Nothing [BORIS:a].",
         [("a", False)],
-        unknown_ids=["zzz"],
+        unknown_ids=["zzz9", "count_by"],
         stop_reason="budget",
     )
     s = score_answer(q, r)
@@ -202,6 +210,7 @@ def test_score_failures_are_named():
         "records_all", "tools", "mentions", "numbers",
     }  # fmt: skip
     assert failed["records_all"] == "missing: b" and failed["numbers"] == "missing: 7"
+    assert failed["no_unknown_ids"] == "zzz9"  # count_by cannot be a record
     assert not s.passed and s.score == 0.0
 
 

@@ -9,7 +9,9 @@ LLM, so a score changes only when the answer changes.
 Every question is also held to three checks applied to all answers:
 
 * ``answered``: the agent finished (no used-up tool budget, no cut-off);
-* ``no_unknown_ids``: every cited ID is in the catalogue;
+* ``no_unknown_ids``: every cited ID that could be a record is in the catalogue
+  (references without digits, such as tool names, are removed by the agent and
+  not counted: :func:`chatcde.agent.could_be_record`);
 * ``cited_from_tools``: every cited record came back from a tool.
 
 ``run_questions`` asks each question once per model and run, in a fresh
@@ -31,7 +33,7 @@ from typing import Any, Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
-from chatcde.agent import CITE_GROUP_RE, Agent, AgentError, AgentResult
+from chatcde.agent import CITE_GROUP_RE, Agent, AgentError, AgentResult, could_be_record
 from chatcde.config import Config
 from chatcde.store.endpoint import EndpointClient, EndpointError
 
@@ -158,6 +160,20 @@ _THOUSANDS = re.compile(r"(?<=\d)[,'’   ](?=\d{3}(?!\d))")
 _NUMBER = re.compile(r"\d+(?:\.\d+)?")
 
 
+def _number_found(expected: float, found: set[float]) -> bool:
+    """Whether ``expected`` is in ``found``, or a more precise number rounds to it.
+
+    ``28`` matches ``27.6`` to ``28.4`` (an answer more precise than the
+    expectation, #5 rerun), but not ``28.5``; an expected ``28.5`` must be
+    written to at least one decimal. Half a unit of the expectation's last
+    place, strictly: Python's ``round`` would round 28.5 down to 28.
+    """
+    text = f"{expected:g}"
+    places = len(text.split(".")[1]) if "." in text else 0
+    half = 0.5 * 10**-places
+    return any(abs(n - expected) < half - 1e-9 for n in found)
+
+
 def numbers_in(text: str) -> set[float]:
     """The numbers written in ``text``, ignoring citations and thousands separators."""
     plain = _THOUSANDS.sub("", CITE_GROUP_RE.sub(" ", text))
@@ -182,6 +198,7 @@ def score_answer(
 ) -> QuestionScore:
     """Score one answer against its question's expectations (pure code)."""
     e = question.expect
+    unknown = [u for u in result.unknown_ids if could_be_record(u)]
     cited = [c.citation.record_id for c in result.citations]
     cited_set = set(cited)
     answer = _fold(result.answer)
@@ -194,8 +211,8 @@ def score_answer(
         ),
         CheckResult(
             name="no_unknown_ids",
-            passed=not result.unknown_ids,
-            detail=", ".join(result.unknown_ids),
+            passed=not unknown,
+            detail=", ".join(unknown),
         ),
         CheckResult(
             name="cited_from_tools",
@@ -252,7 +269,7 @@ def score_answer(
         )
     if e.numbers:
         found = numbers_in(result.answer)
-        missing_n = [n for n in e.numbers if float(n) not in found]
+        missing_n = [n for n in e.numbers if not _number_found(float(n), found)]
         checks.append(
             CheckResult(
                 name="numbers",

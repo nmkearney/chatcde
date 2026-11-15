@@ -17,6 +17,7 @@ import pytest
 from chatcde.agent import (
     BUDGET_NOTE,
     CITATION_NOTE,
+    TOOL_CALL_NOTE,
     Agent,
     AgentError,
     format_arguments,
@@ -395,26 +396,32 @@ def test_citations_are_checked(fixture_db: Path, tmp_path: Path):
 
 
 def test_unknown_references_are_sent_back_once(fixture_db: Path, tmp_path: Path):
-    # 2026-11-11: the agent cited the tool it counted with as a record.
+    # A made-up record ID (it has digits, so it could be a record).
     llm = ScriptedLLM(
         [
             reply(calls=[call("count_by", {"row": "impact_area"})]),
-            reply("SG leads [BORIS:count_by]."),
+            reply("SG leads [BORIS:0000fake-0000-4000-8000-000000000000]."),
             reply(f"SG leads; for example [BORIS:{MRD}]."),
         ]
     )
     agent = make_agent(make_config(tmp_path, fixture_db), llm)
     result = agent.ask("?")
     assert result.answer == f"SG leads; for example [BORIS:{MRD}]."
-    assert result.retried_ids == ["count_by"] and result.unknown_ids == []
+    assert (
+        result.retried_ids == ["0000fake-0000-4000-8000-000000000000"]
+        and result.unknown_ids == []
+    )
     assert result.citations[0].from_tools and result.rounds == 3
     retry = llm.requests[-1]
     assert "tools" not in retry
     assert retry["messages"][-1] == {
         "role": "user",
-        "content": CITATION_NOTE.format(ids="count_by"),
+        "content": CITATION_NOTE.format(ids="0000fake-0000-4000-8000-000000000000"),
     }
-    assert retry["messages"][-2]["content"] == "SG leads [BORIS:count_by]."
+    assert (
+        retry["messages"][-2]["content"]
+        == "SG leads [BORIS:0000fake-0000-4000-8000-000000000000]."
+    )
     # Only the corrected answer stays in the conversation.
     assert [m["role"] for m in agent.messages][-2:] == ["tool", "assistant"]
     assert agent.messages[-1]["content"] == result.answer
@@ -422,12 +429,41 @@ def test_unknown_references_are_sent_back_once(fixture_db: Path, tmp_path: Path)
 
 def test_without_retry_unknown_references_are_removed(fixture_db: Path, tmp_path: Path):
     cfg = make_config(tmp_path, fixture_db, "agent:\n  citation_retry: false\n")
-    llm = ScriptedLLM([reply("Counted [BORIS:coverage_report]; see [BORIS:count_by].")])
+    llm = ScriptedLLM([reply("Counted [BORIS:coverage_report]; see [BORIS:99-x].")])
     result = make_agent(cfg, llm).ask("?")
     assert len(llm.requests) == 1
     assert result.answer == "Counted; see."
-    assert result.unknown_ids == ["coverage_report", "count_by"]
+    assert result.unknown_ids == ["99-x"]
     assert result.retried_ids == []
+
+
+def test_references_that_cannot_be_records_are_removed_without_retry(
+    fixture_db: Path, tmp_path: Path
+):
+    """#5 rerun: gpt-oss cites tools after counts; removed, no second round."""
+    text = (
+        "SG leads [BORIS:count_by]; none 【BORIS:[]】 [BORIS:gap-result; BORIS:SG-d]."
+    )
+    llm = ScriptedLLM([reply(text)])
+    result = make_agent(make_config(tmp_path, fixture_db), llm).ask("?")
+    assert len(llm.requests) == 1 and result.rounds == 1
+    assert result.answer == "SG leads; none."
+    assert result.unknown_ids == [] and result.retried_ids == []
+
+
+def test_a_tool_call_written_as_text_is_sent_back_once(
+    fixture_db: Path, tmp_path: Path
+):
+    """#5 rerun: qwen3.8 answered with a raw <tool_call> text."""
+    raw = "<tool_call> <function=search_publications> </function> </tool_call>"
+    llm = ScriptedLLM([reply(raw), reply("Answer."), reply(raw), reply(raw)])
+    agent = make_agent(make_config(tmp_path, fixture_db), llm)
+    result = agent.ask("?")
+    assert result.answer == "Answer." and len(llm.requests) == 2
+    assert llm.requests[1]["messages"][-1]["content"] == TOOL_CALL_NOTE
+    assert "tools" in llm.requests[1]
+    again = agent.ask("?")  # sent back once per question, then kept
+    assert again.answer == raw and len(llm.requests) == 4
 
 
 def test_count_queries_are_kept_with_their_denominator(
@@ -599,9 +635,9 @@ def test_canonical_references_parse():
 
 
 def test_a_typographic_reference_is_sent_back(fixture_db: Path, tmp_path: Path):
-    llm = ScriptedLLM([reply("Total [BORIS:\u202fSG\u2011d]."), reply("Total 12.")])
+    llm = ScriptedLLM([reply("Total [BORIS:\u202f99\u2011d]."), reply("Total 12.")])
     result = make_agent(make_config(tmp_path, fixture_db), llm).ask("?")
-    assert result.retried_ids == ["SG-d"] and result.answer == "Total 12."
+    assert result.retried_ids == ["99-d"] and result.answer == "Total 12."
 
 
 def test_gap_questions_are_routed_to_find_gaps(fixture_db: Path, tmp_path: Path):

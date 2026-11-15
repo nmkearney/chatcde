@@ -225,6 +225,15 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
 - The API key lives in `~/.zshrc`, which Claude's non-interactive shell does not read; load
   it with `eval "$(grep '^export CHATCDE_LLM_API_KEY=' ~/.zshrc | tail -1)"`.
 
+## Test questions (`chatcde evaluate questions`, 2026-11-15)
+
+- 27 questions in `tests/questions.yaml` (#19), written by the developer; both agent models,
+  3 runs each. Baseline: gpt-oss-120b 50/81, qwen3.8-27b 74/81. After the M1 fixes (#91–#94
+  and decision 0043): **both 78/81 (96%)**; gpt-oss ~15 s per answer, qwen ~63 s.
+- Required pass rate 0.85 (decision 0043). Agent model stays gpt-oss-120b.
+- Known weakness: gpt-oss often stops at impact-area level on gap questions (no sub-area check).
+- GPUStack refuses (HTTP 403) or times out when the VPN drops; drop those result lines and rerun.
+
 ## Architecture
 
 ```
