@@ -347,3 +347,12 @@ def test_repo_questions_file_is_valid():
     assert qs.questions and all(q.notes for q in qs.questions)
     gap = next(q for q in qs.questions if q.id == "gaps-sg-methods")
     assert gap.kind == "gaps" and gap.expect.tools == ["find_gaps"]  # #67
+
+
+def test_heldout_questions_file_is_valid():
+    """The held-out questions (#97) load and share no IDs with the tuned set."""
+    here = Path(__file__).parent
+    held = load_questions(here / "questions_heldout.yaml")
+    tuned = load_questions(here / "questions.yaml")
+    assert len(held.questions) == 10 and all(q.notes for q in held.questions)
+    assert not {q.id for q in held.questions} & {q.id for q in tuned.questions}
