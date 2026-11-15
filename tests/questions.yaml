@@ -321,8 +321,20 @@ questions:
     expect:
       tools: [search_publications]
       records_any:
+        - af41605a-3ded-44e7-8fdc-aeb872066fe2
+        - 58d5eabb-e284-4e8a-8392-306789a0d255
+        - 76430825-4007-4f1c-930e-9571b9c624f1
+        - b1d4ef8e-fea0-4962-a55e-555c33454bd9
+        - 385b07ca-184e-4f8c-8aed-0928defaa633
+        - ad11a17a-7851-4d24-8ef7-8c406aae0322
+        - d738efae-99c8-4f67-ab83-36a52228b3f0
+        - 0f94cb42-56e7-4021-ab2c-a10b6fe900ca
+        - d4f89dd1-0163-41f9-aaef-62ae0dd360e0
+        - fd7bb4ad-bc4f-4520-8fa5-4d45cbf5b0b1
         - fd0d8fb4-78f0-44fc-96e4-39cb6e7e1c89
         - 28c2a1d4-8e27-46fc-a1fb-9f2ab4b22867
+        - 9db36375-c251-40cc-99d1-cdcb9b06723c
+        - 3f02da19-e939-49a8-8a7f-cc4d5e8d6c63
         - e854a702-4935-4114-80fa-7aa717334d2f
         - 42033b6e-4aec-4a31-85a6-71c25c89188f
         - 46c001fe-fb53-498c-9a74-726b6f0143b2
@@ -330,8 +342,9 @@ questions:
         - 837fa9c2-0a51-4f99-a4db-5352303e1c06
       mentions_any: ["water", "irrigation", "horticulture"]
     notes: >
-      19 records have Mount Kenya in the title; the list is those with full text. The
-      older water studies (2005–2014) are metadata only.
+      The 19 records with Mount Kenya in the title. Until the rerun of 2026-11-15 the
+      list held only the 7 with full text; an answer citing the 2005–2007 water studies
+      (metadata only, abstracts) was right and failed, so all 19 count.
 
   - id: synth-madagascar-urban
     question: "What does CDE research say about the politics of urban planning in Antananarivo?"
