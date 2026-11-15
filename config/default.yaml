@@ -162,7 +162,7 @@ tagging:
   max_consecutive_failures: 5    # stop if the endpoint keeps failing
   includes_shown: 6              # synonyms shown per term in the prompt
   m49_file: "vocab/m49.csv"      # UN M49 countries and regions (scripts/fetch_m49.py)
-  country_aliases:               # non-ISO codes the model writes -> alpha-3 (#70, decision 0037);
+  country_aliases:               # non-ISO codes the model writes -> alpha-3 (#70, decision 0039);
     LIT: LTU                     # alpha-2 codes and English names map automatically;
     MOR: MAR                     # anything else (e.g. KOS, Kosovo has no ISO code) is dropped
     CHD: TCD
