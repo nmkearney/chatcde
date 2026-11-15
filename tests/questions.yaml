@@ -1,8 +1,241 @@
 # Test questions with known answers (#19), format: docs/decisions/0025-evaluate-questions.md.
 # Expected values come from the real catalogue; `notes` says how to recompute them
 # when the data or the tags change. Run with `chatcde evaluate questions`.
+#
+# Written on 2026-11-15 by the only developer (decision 0033), not by CDE researchers:
+# the questions are what a researcher might plausibly ask, checked against the data,
+# and should be reviewed by CDE staff in a later phase.
+# Data state: 3,003 records, tag.v5, vocabulary 0.4, tools.min_confidence 0.5
+# (decision 0038). Counts with `chatcde count` include all publication types; gaps
+# (`--gaps`, `chatcde gaps`) leave conference items out (decision 0018).
+# Record lists in `records_any` are the records whose title is plainly on the topic
+# (DuckDB title queries); citing any one of them passes.
 version: 1
 questions:
+  # --- lookup: one known publication -------------------------------------------
+  - id: lookup-kenya-atlas
+    question: "Who wrote CDE's Socio-Economic Atlas of Kenya, and when was the revised edition published?"
+    kind: lookup
+    expect:
+      records_all: [553b8aad-5cdf-4652-b0b8-e38cf774d03a]
+      mentions: ["Wiesmann", "Kiteme"]
+      numbers: [2016]
+    notes: >
+      `chatcde show 553b8aad-5cdf-4652-b0b8-e38cf774d03a`: book, 2016, authors
+      Wiesmann, Kiteme, Mwangi.
+
+  - id: lookup-lao-atlas
+    question: "Which period does the Socio-Economic Atlas of the Lao PDR cover?"
+    kind: lookup
+    expect:
+      records_all: [48f57ad3-89d8-4459-9770-b73990409502]
+      numbers: [2005, 2015]
+    notes: >
+      Title "Socio-Economic Atlas of the Lao PDR. Patterns and trends from 2005 to 2015"
+      (2018, Epprecht et al.). The older "Atlas of agriculture in the Lao PDR"
+      (9ce79cef-…, 1999–2011) is a different record and does not answer the question.
+
+  - id: lookup-land-concessions-laos
+    question: "Who are the authors of 'Governing Land Concessions in Laos', and in which book did it appear?"
+    kind: lookup
+    expect:
+      records_all: [49690ed2-b4bd-4bb6-afbf-d8b6bda7c87d]
+      mentions: ["Kenney-Lazar", "Messerli"]
+      mentions_any: ["Routledge Handbook", "Land and Resource Grabbing"]
+    notes: >
+      `chatcde show 49690ed2-b4bd-4bb6-afbf-d8b6bda7c87d`: 2023 book section in the
+      Routledge Handbook of Global Land and Resource Grabbing; authors Kenney-Lazar,
+      Schönweger, Messerli, Nanhthavong.
+
+  - id: lookup-econ-wocat
+    question: "Is there a CDE dataset on the costs and benefits of sustainable land management technologies? What is it called?"
+    kind: lookup
+    expect:
+      records_any: [38e0f041-afbd-47ec-bd1f-9a2e097656ac]
+      mentions: ["ECON-WOCAT"]
+    notes: >
+      2022 policy brief "Costs and Benefits of Sustainable Land Management
+      Technologies - a new open access ECON-WOCAT dataset …" (Mirzabaev et al.).
+
+  # --- search: the answer is in the body text, not in a reference list (#68) -----
+  - id: search-glacier-tien-shan
+    question: "How much glacier area was lost in the Northern Tien Shan, according to CDE research?"
+    kind: search
+    expect:
+      tools: [search_publications]
+      records_any: [1c085052-ef78-475b-b4ca-d8577cf7ca95]
+      numbers: [28]
+    notes: >
+      Niederer et al. 2008, "Tracing glacier wastage in the Northern Tien Shan": 28% area
+      loss in the Sokoluk watershed, 1963–2000 (abstract and page 1); small glaciers lost
+      41.5% between 1986 and 2000. Search "glacier retreat in Central Asia" puts this
+      record first.
+
+  - id: search-slm-costs
+    question: "What are typical establishment costs of sustainable land management technologies in the WOCAT data?"
+    kind: search
+    expect:
+      tools: [search_publications]
+      records_any: [12fb6992-829a-4501-b08d-0c457ebc6701, 38e0f041-afbd-47ec-bd1f-9a2e097656ac]
+      numbers: [470]
+    notes: >
+      12fb6992-… (2013, global WOCAT data), page 3: "The median establishment cost for the
+      363 SLM case studies is US $ 470" (per hectare). Search "costs and benefits of
+      sustainable land management technologies" finds both records.
+
+  - id: search-mount-kenya-food-security
+    question: "What keeps food-insecure smallholder households around north-west Mount Kenya from using their land productively?"
+    kind: search
+    expect:
+      tools: [search_publications]
+      records_any: [42033b6e-4aec-4a31-85a6-71c25c89188f, e854a702-4935-4114-80fa-7aa717334d2f, 46c001fe-fb53-498c-9a74-726b6f0143b2]
+      mentions_any: ["technology", "tools", "implements"]
+    notes: >
+      42033b6e-… (2020, Theory of Access, 76 households): food insecurity was not mainly a
+      lack of property rights but of access to farm technology (hand tools and
+      implements). Its pages 12–14 are references; the finding is in the abstract
+      and page 1.
+
+  - id: search-coffee-cocoa-governance
+    question: "Which sustainability governance strategies do companies use in coffee and cocoa value chains besides certification?"
+    kind: search
+    expect:
+      tools: [search_publications]
+      records_any: [c5fb904c-048c-4565-a843-231eb34a5a66]
+      mentions_any: ["direct trade", "mission-driven", "solidarity economy", "producer-led"]
+    notes: >
+      c5fb904c-… (2026): six strategies (corporate programmes, certification, direct
+      trade, mission-driven businesses, solidarity economy, producer-led upgrading),
+      survey of 112 organisations in Switzerland and Peru. The first search hits for
+      "sustainable coffee value chains" are its reference pages 15–16.
+
+  - id: search-telecoupling
+    question: "Where has CDE applied the telecoupling framework?"
+    kind: search
+    expect:
+      tools: [search_publications]
+      records_any:
+        - 9eb82f63-131f-43a8-89c6-e9edf13dec3a
+        - a09e8861-8eec-4055-87a1-676e546e6541
+        - 9c11ede3-fdfc-4406-90d5-342251f5178a
+        - 8ee75f3d-f6e7-408a-bec9-af260ed8af92
+        - fe7921cf-83d1-4057-9551-5f25a1fd8335
+        - 77c1fb01-b8fc-4fbc-b326-52f70ff98601
+        - 6bc30321-f6fa-4a78-a5f1-eeaaaf32a608
+        - bc0ae901-bdc6-4b94-8548-60e378d11ddd
+        - 74d01c82-bfb4-4752-87ce-2d8794bca3ec
+        - 06194585-1338-4d01-be8c-ab43eba3ca9e
+        - 52a0b5f4-d3eb-4a8a-b5f3-b6b51636442e
+        - 4f68fcd1-ba8a-476b-8b80-ed7575518329
+      mentions_any: ["Madagascar", "Myanmar", "Laos"]
+    notes: >
+      30 records name telecoupling in title or abstract; the list is the full-text
+      articles and conference papers among them. Most case studies are on forest
+      frontiers in north-eastern Madagascar, Myanmar and Laos.
+
+  - id: search-uni-bern-teaching-de
+    question: "Wie misst die Universität Bern, ob nachhaltige Entwicklung in der Lehre verankert ist?"
+    kind: search
+    expect:
+      tools: [search_publications]
+      records_any:
+        - 8634edd3-9087-41de-9eba-69c1e98e8be6
+        - d492d3f1-8e0a-4515-804b-b6d09dd6b20f
+        - 988585f5-4e41-4f72-8bd7-d26ecf499439
+        - c7c9136f-52b3-40d4-893c-cb638a9c2147
+        - 74f8611b-de19-41d8-a388-0b5f4a17ea7c
+        - a20389ab-b429-4525-8627-b46665a28a5d
+        - aec214d3-40ae-40b1-90e3-fb6edf0457ab
+      mentions_any: ["Monitoring", "Baseline"]
+    notes: >
+      German question. CDE writes a baseline report (2018) and yearly monitoring reports
+      for the Vice-Rectorate on integrating sustainable development into teaching.
+      Search "Nachhaltigkeit in der Lehre an der Universität Bern" finds them.
+
+  # --- count: numbers from count_by, with denominators --------------------------
+  - id: count-impact-areas
+    question: "How many CDE publications are there in each impact area?"
+    kind: count
+    expect:
+      tools: [count_by]
+      numbers: [2002, 1275, 741, 559]
+    notes: >
+      `chatcde count impact_area`: SL 2,002, SG 1,275, TE 741, JE 559 of 3,003 records
+      (a record can be in several areas; 249 untagged).
+
+  - id: count-sg-interviews
+    question: "How many Sustainable Governance publications use interviews or focus groups?"
+    kind: count
+    expect:
+      tools: [count_by]
+      numbers: [165, 1275]
+    notes: >
+      Filtered by impact area. `chatcde count method --tag impact_area:SG --level term`:
+      MET-interviews-and-focus-groups 165 of 1,275 SG records (201 without a method tag).
+
+  - id: count-sl-countries
+    question: "In which countries has CDE done the most research on sustainable land systems?"
+    kind: count
+    expect:
+      tools: [count_by]
+      mentions: ["Switzerland", "Kenya", "Bolivia"]
+      numbers: [336, 150]
+    notes: >
+      Filtered by impact area. `chatcde count country --tag impact_area:SL`: of 2,002 SL
+      records, global or multi-country 492, CHE 336, KEN 150, BOL 146, ETH 135, LAO 112,
+      MDG 110 (233 without a country tag).
+
+  - id: count-je-sdgs
+    question: "Which SDGs do CDE's Just Economies and Human Well-being publications address most often?"
+    kind: count
+    expect:
+      tools: [count_by]
+      numbers: [184, 180, 173]
+    notes: >
+      Filtered by impact area. `chatcde count sdg --tag impact_area:JE`: of 559 JE
+      records, SDG 15 184, SDG 13 180, SDG 1 173, SDG 10 145 (102 without an SDG tag).
+
+  - id: count-te-policy-audience
+    question: "Of CDE's Transformative Education and Science publications, how many are written for a policy audience?"
+    kind: count
+    expect:
+      tools: [count_by]
+      numbers: [233, 741]
+    notes: >
+      Filtered by impact area. `chatcde count audience_type --tag impact_area:TE`:
+      Policy 233 of 741 TE records (Academic 533, Practitioner 217, Public 20; 118
+      untagged).
+
+  - id: count-laos
+    question: "How many CDE publications are about Laos?"
+    kind: count
+    expect:
+      tools: [count_by]
+      numbers: [142]
+    notes: >
+      `chatcde count country`: LAO 142 of 3,003 (country tags; 585 records have none).
+      Title search alone finds fewer (35 titles say "Laos").
+
+  - id: count-since-2020
+    question: "How many publications has CDE produced since 2020, and in which impact area most?"
+    kind: count
+    expect:
+      tools: [count_by]
+      numbers: [1058, 627]
+    notes: >
+      `chatcde count impact_area --year-from 2020`: 1,058 records; SL 627, SG 494, TE 289,
+      JE 259 (77 untagged).
+
+  - id: count-full-text
+    question: "For how many CDE publications can ChatCDE read the full text?"
+    kind: count
+    expect:
+      tools: [coverage_report]
+      numbers: [1542, 3003]
+    notes: >
+      `chatcde coverage`: 1,542 full text, 606 abstract only, 855 metadata only, of 3,003.
+
+  # --- gaps: observed vs expected from find_gaps ----------------------------------
   - id: gaps-sg-methods
     question: "Which methods has CDE rarely used in Sustainable Governance?"
     kind: gaps
@@ -17,3 +250,136 @@ questions:
       find_gaps(sub_area, method) flags SG-b x MET-G-geospatial-and-land (2 records,
       14.3 expected) and SG-a x MET-G-biophysical (7, 32.8 expected). Recompute with
       `chatcde gaps --dims impact_area,method` and `--dims sub_area,method`.
+      Rechecked 2026-11-15 after #70: 2 vs 14.2 and 7 vs 32.7.
+
+  - id: gaps-te-data-types
+    question: "Which kinds of data has CDE rarely used in its Transformative Education and Science work?"
+    kind: gaps
+    expect:
+      tools: [find_gaps]
+      mentions_any: ["geospatial", "remote sensing"]
+      numbers: [21]
+    notes: >
+      `chatcde count impact_area data_type --gaps`: the only cell is TE x
+      DAT-G-geospatial-and-remote-sensing, 21 records where 90.9 were expected. At
+      sub-area level TE-a x geospatial is 0 vs 12.7 (`count sub_area data_type --gaps`).
+
+  - id: gaps-te-sdgs
+    question: "Which SDGs does CDE's Transformative Education and Science work rarely address, compared with the rest of CDE?"
+    kind: gaps
+    expect:
+      tools: [find_gaps]
+      mentions_any: ["SDG 8", "Goal 8", "decent work", "economic growth"]
+    notes: >
+      `chatcde count impact_area sdg --gaps --level term`: TE x SDG 8, 2 records where
+      21.5 were expected; the other cell is SG x SDG 4 (14 vs 57.0).
+
+  - id: gaps-je-regions
+    question: "Which world regions has CDE rarely studied in its Just Economies research?"
+    kind: gaps
+    expect:
+      tools: [find_gaps]
+      mentions_any: ["Eastern Africa", "East Africa"]
+    notes: >
+      Like gaps-sg-methods, the answer is one level down. `chatcde count impact_area
+      region --gaps --level term` flags no JE cell. `chatcde count region sub_area --gaps
+      --level term`: Eastern Africa (and CDE-EAF) x JE-d 0 vs 5.4 and x JE-c 1 vs 9.4.
+      A good answer says there is no gap at impact-area level and names these cells.
+
+  # --- synthesis: several records, summarised with citations ------------------------
+  - id: synth-land-acquisitions-laos
+    question: "What has CDE found about the impacts of large-scale land acquisitions in Laos?"
+    kind: synthesis
+    expect:
+      tools: [search_publications]
+      records_any:
+        - bb0ab887-0dff-436d-9dca-79fe30c4c998
+        - 8c9f5663-c607-43a6-821f-556c736c5c5a
+        - 717d55e2-8a66-4164-a72f-e3ff3514e3c6
+        - 5af6ed97-7833-4417-b679-efb51040e224
+        - 44618660-b0b4-4ffa-a4e7-f9f04b177f9a
+        - 4a230e33-003f-48ff-8019-a4d3316b9994
+        - cc272796-9d09-4b1e-b82a-dd263104cf5c
+        - 49690ed2-b4bd-4bb6-afbf-d8b6bda7c87d
+        - 15bf4116-fe0a-4a5e-946f-d55a65ec058a
+        - 79b63c13-23d6-4904-99c0-73c87bba54d2
+        - 889883b1-1b27-47a5-8b26-ecc04d83df5f
+        - 4e93c6b7-16e6-4c38-8672-5f8b87ba6750
+      mentions: ["Laos"]
+      mentions_any: ["well-being", "wellbeing", "poverty", "livelihood", "food security"]
+    notes: >
+      Full-text records on land concessions and investments in Lao PDR (country tag LAO
+      and a land-deal title). E.g. bb0ab887-… (2021): 294 affected villages, 18 pathways
+      to well-being, five archetypical processes; 717d55e2-… (2021) on wellbeing or
+      poverty.
+
+  - id: synth-mount-kenya
+    question: "Summarise CDE's research on land and water use around Mount Kenya."
+    kind: synthesis
+    expect:
+      tools: [search_publications]
+      records_any:
+        - fd0d8fb4-78f0-44fc-96e4-39cb6e7e1c89
+        - 28c2a1d4-8e27-46fc-a1fb-9f2ab4b22867
+        - e854a702-4935-4114-80fa-7aa717334d2f
+        - 42033b6e-4aec-4a31-85a6-71c25c89188f
+        - 46c001fe-fb53-498c-9a74-726b6f0143b2
+        - 598353cd-4d89-4510-8469-b1334be8f189
+        - 837fa9c2-0a51-4f99-a4db-5352303e1c06
+      mentions_any: ["water", "irrigation", "horticulture"]
+    notes: >
+      19 records have Mount Kenya in the title; the list is those with full text. The
+      older water studies (2005–2014) are metadata only.
+
+  - id: synth-madagascar-urban
+    question: "What does CDE research say about the politics of urban planning in Antananarivo?"
+    kind: synthesis
+    expect:
+      tools: [search_publications]
+      records_any:
+        - 3653f007-58e6-46c2-83b4-d968d9c7ad4d
+        - a782d4e8-e8a7-48b0-9436-11ac41a8a3ff
+        - 1f52de8e-225f-4784-8f6b-2062921c4e18
+      mentions: ["Antananarivo"]
+      mentions_any: ["president", "rentier", "infrastructure"]
+    notes: >
+      2025 articles on presidential projects and urban rentiership in Madagascar
+      (1f52de8e-…, a short article, is metadata only); three 2024 conference items
+      (metadata only) cover the same topic.
+
+  - id: synth-myanmar-land
+    question: "What has CDE learned about land use change and land governance in southern Myanmar?"
+    kind: synthesis
+    expect:
+      tools: [search_publications]
+      records_any:
+        - 7bf828df-a479-4756-ad05-5b75c8764c51
+        - 4505d641-6f1f-407d-b8e9-66bf4db00233
+        - 11b7d6ec-4856-46e9-be5f-23b27da84c5e
+        - 8ea8ba17-e721-4996-ab8a-61b33676e910
+        - 572fc22f-7a5e-4036-9713-1f04492c1745
+        - b56a73df-3ebe-4b90-93a8-f2e479d8404c
+        - fd38dc7e-2c3c-44f2-933a-c30866978f80
+        - 0f5a6761-4cf6-44db-afd1-46b8cc112289
+        - 751a8c51-a3c1-4503-af7b-b4c37c3a63fa
+      mentions_any: ["Tanintharyi", "oil palm", "Karen"]
+    notes: >
+      Full-text records on Tanintharyi Region and Karen State: oil palm concessions mostly
+      unconverted forest (2019), the cash crop boom (2020), multi-stakeholder platforms
+      (2022), the "Voices of Land" working papers (2018).
+
+  - id: synth-slm-wocat
+    question: "What role do WOCAT's tools play in scaling up sustainable land management?"
+    kind: synthesis
+    expect:
+      tools: [search_publications]
+      records_any:
+        - 3b350840-b3b7-41ce-8005-4c8d55e29b38
+        - 38e0f041-afbd-47ec-bd1f-9a2e097656ac
+        - 12fb6992-829a-4501-b08d-0c457ebc6701
+        - 3d0d862d-200a-4784-9258-fd26b3b8419a
+      mentions: ["WOCAT"]
+      mentions_any: ["database", "documentation", "decision support", "extension"]
+    notes: >
+      24 records have WOCAT in the title; the list is the full-text ones plus 3d0d862d-…
+      (2023, extension services, metadata only).
