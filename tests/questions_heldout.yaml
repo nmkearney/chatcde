@@ -28,10 +28,10 @@ questions:
     expect:
       records_all: [d326c877-13b8-4ede-a42c-06c430c7aa31]
       mentions: ["Jacobi", "Agroforestry Systems"]
-      numbers: [2014]
     notes: >
       `chatcde show d326c877-13b8-4ede-a42c-06c430c7aa31`: 2014 article in Agroforestry
-      Systems, first author Johanna Jacobi.
+      Systems, first author Johanna Jacobi. `numbers: [2014]` was removed after the first
+      run (decision 0045): the question does not ask for the year.
 
   # --- search ------------------------------------------------------------------
   - id: ho-search-terrace-deposition
@@ -71,8 +71,10 @@ questions:
       tools: [count_by]
       numbers: [614, 259]
     notes: >
-      `chatcde count impact_area --country CHE`: 614 records; with `--lang de` 259 (BORIS
-      language code; `me` records are not counted as German).
+      `chatcde count impact_area --country CHE`: 614 records; with `--lang de` 259 (German
+      among the BORIS language codes; `me` records are not counted as German).
+      coverage_report's by_language counts the first listed language only: de 255
+      (decision 0045, #98).
 
   # --- gaps --------------------------------------------------------------------
   - id: ho-gaps-urban-methods

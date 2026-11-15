@@ -447,9 +447,13 @@ call, words and numbers it must mention. Every answer must also finish, cite onl
 catalogue records, and cite only records a tool returned. The command prints a table of
 answers and one of models: pass rate, score, record recall, tool calls, time and
 tokens. It exits 1 if a model's pass rate is below
-`evaluation.min_question_pass_rate` (0.8). Answers are saved as JSON lines in
+`evaluation.min_question_pass_rate` (0.85). Answers are saved as JSON lines in
 `evaluation.results_dir`. The question format is in
 `docs/decisions/0025-evaluate-questions.md`.
+
+`tests/questions_heldout.yaml` holds 10 held-out questions that were not used for tuning
+(decision 0045). Run them with `--file tests/questions_heldout.yaml --runs 1`, and don't
+change code just to make one of them pass.
 
 ## Export the data bundles
 

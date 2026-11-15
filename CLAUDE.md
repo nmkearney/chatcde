@@ -234,6 +234,9 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
   and decision 0043): **both 78/81 (96%)**; gpt-oss ~15 s per answer, qwen ~63 s.
 - Required pass rate 0.85 (decision 0043). Agent model stays gpt-oss-120b.
 - Known weakness: gpt-oss often stops at impact-area level on gap questions (no sub-area check).
+- Held-out: 10 new questions in `tests/questions_heldout.yaml` (#97, decision 0045), run once:
+  gpt-oss 9/10, qwen 10/10. Never change code to pass a held-out question; move it to the
+  tuned set instead.
 - GPUStack refuses (HTTP 403) or times out when the VPN drops; drop those result lines and rerun.
 
 ## Architecture
