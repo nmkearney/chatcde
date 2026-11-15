@@ -58,6 +58,19 @@ empty). Headings alone would also miss reference lists that start mid-chunk or c
   - Mount Kenya food security: 5 → 0, and 2 records found instead of 1;
   - coffee value chains: 3 → 0;
   - land acquisitions in Laos: 2 → 0.
+- Search and synthesis test questions (11 questions, 3 runs, `data/eval/68-refs-2026-11-15.jsonl`)
+  against the M1 answers rescored with the same checks:
+
+  | | gpt-oss-120b | qwen3.8-27b |
+  |---|---|---|
+  | search | 18/18 → 18/18 | 17/18 → 17/18 |
+  | synthesis | 14/15 → 14/15 | 14/15 → 15/15 |
+
+  The one gpt-oss failure (`synth-land-acquisitions-laos`, run 1) is unrelated: the tool
+  budget ran out on 12 search calls with `filters.record_id` (decision 0041). Mean record
+  recall moved by run-to-run noise in both directions. For the four questions with the
+  largest moves, search finds the same expected records with and without the filter, so the
+  differences are in which records the model chose to cite.
 - Boundary chunks lose their prose paragraph to search (about 1 in 30 flagged chunks).
   The 50-token overlap with the previous chunk keeps part of it.
 - Questions that need the references themselves ("who does CDE cite on …") are not
