@@ -169,7 +169,7 @@ def render_result(
             )
     if result.counts:
         console.print()
-        console.print("[bold]Counts[/bold] (the queries behind the numbers)")
+        console.print("[bold]Count queries run[/bold] (to check the numbers)")
         for q in result.counts:
             console.print(f"- {escape(q.text())}", highlight=False)
     if result.unknown_ids:

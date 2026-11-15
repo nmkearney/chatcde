@@ -551,13 +551,51 @@ def test_typographic_references_are_recognised():
     # gpt-oss, 2026-11-11: narrow no-break spaces and non-breaking hyphens.
     text = "Total [BORIS:\u202fSG\u2011d,\u202fSG\u2011a], pp. 2\u20133 \u2011 kept."
     fixed = normalise_references(text)
-    assert fixed == "Total [BORIS: SG-d, SG-a], pp. 2\u20133 \u2011 kept."
+    assert fixed == "Total [BORIS:SG-d], pp. 2\u20133 \u2011 kept."
     assert parse_citations(fixed) == [("SG-d", None)]
     # gpt-oss, 2026-11-11: lenticular and full-width brackets.
     wide = "None 【BORIS:find_gaps, level=group】 and ［BORIS:x］, 【note】."
-    assert normalise_references(wide) == (
-        "None [BORIS:find_gaps, level=group] and [BORIS:x], 【note】."
-    )
+    expected = "None [BORIS:find_gaps] and [BORIS:x], 【note】."
+    assert normalise_references(wide) == expected
+
+
+UUID = "8ee75f3d-f6e7-408a-bec9-af260ed8af92"
+UUID2 = "572fc22f-7a5e-4036-9713-1f04492c1745"
+
+
+@pytest.mark.parametrize(
+    ("written", "canonical"),
+    [
+        # Forms seen in the baseline run of 2026-11-15 (#5, #85).
+        (f"[< BORIS:{UUID} >]", f"[BORIS:{UUID}]"),
+        (f"[**BORIS:{UUID}, S. 5**]", f"[BORIS:{UUID}, p. 5]"),
+        (f"【{UUID}, p. 4\u20116】", f"[BORIS:{UUID}, pp. 4-6]"),
+        (
+            f"[read\u2011section {UUID2.replace('-', chr(0x2011))} p. 7\u20118]",
+            f"[BORIS:{UUID2}, pp. 7-8]",
+        ),
+        (
+            f"[BORIS:{UUID}; BORIS:{UUID2}, page 3]",
+            f"[BORIS:{UUID}; BORIS:{UUID2}, p. 3]",
+        ),
+        (f"[{UUID}; {UUID2}]", f"[BORIS:{UUID}; BORIS:{UUID2}]"),
+        (f"[BORIS:{UUID}, p. 4]", f"[BORIS:{UUID}, p. 4]"),
+        # Not references: left as written.
+        ("[1]", "[1]"),
+        (
+            "[see the table](https://example.org)",
+            "[see the table](https://example.org)",
+        ),
+        ("【note】", "【note】"),
+    ],
+)
+def test_reference_forms_are_made_canonical(written: str, canonical: str):
+    assert normalise_references(f"Claim {written}.") == f"Claim {canonical}."
+
+
+def test_canonical_references_parse():
+    text = normalise_references(f"A 【{UUID}, S. 12】 and [< BORIS:{UUID2} >].")
+    assert parse_citations(text) == [(UUID, 12), (UUID2, None)]
 
 
 def test_a_typographic_reference_is_sent_back(fixture_db: Path, tmp_path: Path):

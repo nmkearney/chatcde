@@ -211,40 +211,81 @@ def parse_citations(answer: str) -> list[tuple[str, int | None]]:
     return found
 
 
-#: Typographic characters models put in references, mapped to plain ones.
-#: gpt-oss writes U+2011 (non-breaking hyphen) and U+202F (narrow no-break
-#: space) inside references; en dashes are kept (page ranges).
+#: Typographic characters models write in references, mapped to plain ones:
+#: gpt-oss writes U+2011 (non-breaking hyphen) and U+202F (narrow no-break space)
+#: inside references (2026-11-11, #80), and en dashes in page ranges.
 _REFERENCE_CHARS = str.maketrans(
-    {
-        "‐": "-",
-        "‑": "-",
-        "‒": "-",
-        "−": "-",
-        " ": " ",
-        " ": " ",
-        " ": " ",
-        " ": " ",
-    }
+    dict.fromkeys("‐‑‒–—−", "-") | dict.fromkeys("    ", " ")
+)
+
+#: Any bracket group, in ASCII, lenticular or full-width brackets (gpt-oss writes
+#: ``【BORIS:x】``, 2026-11-11).
+_ANY_GROUP_RE = re.compile(r"[\[【［〔]([^\[\]【】［］〔〕]*)[\]】］〕]")
+#: A full record UUID, the form of every BORIS record ID.
+_UUID_RE = re.compile(
+    r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", re.IGNORECASE
+)
+#: The ID after ``BORIS:``, once decoration (``<``, ``**``) is removed.
+_REF_ID_RE = re.compile(r"[\w.:/-]+")
+#: A page or page range: ``p. 4``, ``pp. 4-6``, ``S. 5`` (German), ``page 7``.
+_PAGE_RE = re.compile(
+    r"\b(?:pp?\.|S\.|pages?|Seiten?)\s*(\d+)(?:\s*-\s*(\d+))?", re.IGNORECASE
 )
 
 
-#: A ``BORIS:`` group in full-width or lenticular brackets, which gpt-oss also
-#: writes (``【BORIS:find_gaps, row=impact_area】``, 2026-11-11).
-_WIDE_GROUP_RE = re.compile(
-    r"[【［〔]([^【】［］〔〕\[\]]*BORIS:[^【】［］〔〕\[\]]*)[】］〕]"
-)
+def _canonical(rid: str, rest: str) -> str:
+    """One reference as ``BORIS:<id>`` with the first page (range) found in ``rest``."""
+    m = _PAGE_RE.search(rest)
+    if not m:
+        return f"BORIS:{rid}"
+    if m.group(2) and m.group(2) != m.group(1):
+        return f"BORIS:{rid}, pp. {m.group(1)}-{m.group(2)}"
+    return f"BORIS:{rid}, p. {m.group(1)}"
+
+
+def _references_in(group: str) -> list[str]:
+    """The references in one bracket group, canonical; empty if it holds none.
+
+    A group with ``BORIS:`` holds one reference per ``BORIS:``. A group without it
+    counts as a reference when it holds full record UUIDs (``【<uuid>, p. 4】``,
+    ``[read-section <uuid> p. 7]``, gpt-oss 2026-11-15): UUIDs cannot be mistaken
+    for anything else, and IDs that are not records are still caught as unknown.
+    """
+    text = group.translate(_REFERENCE_CHARS)
+    if "BORIS:" in text:
+        out = []
+        for seg in text.split("BORIS:")[1:]:
+            seg = seg.lstrip(" <*_")
+            m = _REF_ID_RE.match(seg)
+            if m and m.group(0).rstrip(".,;:"):
+                out.append(_canonical(m.group(0).rstrip(".,;:"), seg[m.end() :]))
+        return out
+    found = list(_UUID_RE.finditer(text))
+    return [
+        _canonical(
+            m.group(0).lower(),
+            text[m.end() : found[i + 1].start() if i + 1 < len(found) else None],
+        )
+        for i, m in enumerate(found)
+    ]
 
 
 def normalise_references(answer: str) -> str:
-    """Make typographic ``BORIS:`` references plain, so they are checked.
+    """Rewrite every reference into ``[BORIS:<id>]`` or ``[BORIS:<id>, p. <n>]``.
 
-    Full-width and lenticular brackets around a ``BORIS:`` group become ``[]``,
-    and typographic hyphens and spaces inside ``[BORIS:...]`` groups become
-    plain ones. Without this, ``【BORIS:x】`` or ``[BORIS: ab12‑cd]`` is not
-    recognised as a reference at all, so it is neither resolved nor checked.
+    Models write references in many forms; each one that is not recognised is
+    neither resolved nor checked, so its record is lost (#85). This one step
+    handles all forms seen so far: typographic hyphens and spaces, lenticular
+    and full-width brackets, decoration (``[< BORIS:x >]``, ``**BORIS:x**``),
+    German pages (``S. 5``) and bare record UUIDs in brackets. Groups that hold
+    no reference (``[1]``, ``【note】``, Markdown links) are left as written.
     """
-    answer = _WIDE_GROUP_RE.sub(r"[\1]", answer)
-    return CITE_GROUP_RE.sub(lambda g: g.group(0).translate(_REFERENCE_CHARS), answer)
+
+    def replace(m: re.Match[str]) -> str:
+        refs = _references_in(m.group(1))
+        return "[" + "; ".join(refs) + "]" if refs else m.group(0)
+
+    return _ANY_GROUP_RE.sub(replace, answer)
 
 
 def _ref_id(m: re.Match[str]) -> str:

@@ -171,6 +171,18 @@ def test_score_passes_all_checks():
     assert s.tool_calls == 1 and s.tokens == 100
 
 
+def test_mentions_ignore_typographic_hyphens_and_spaces():
+    """gpt-oss writes U+2011 and U+202F (baseline 2026-11-15): still a mention."""
+    q = Question(
+        id="q", question="?", kind="lookup",
+        expect={"mentions": ["Kenney-Lazar", "ECON-WOCAT"],
+                "mentions_any": ["Land and Resource Grabbing"]},
+    )  # fmt: skip
+    text = "By Kenney‑Lazar: the ECON‑WOCAT data, Land and Resource Grabbing."
+    s = score_answer(q, result(text))
+    assert all(c.passed for c in s.checks if c.name.startswith("mentions"))
+
+
 def test_score_failures_are_named():
     q = Question(
         id="q", question="?", kind="search",
