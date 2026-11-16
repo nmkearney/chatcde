@@ -191,6 +191,20 @@ def test_mentions_ignore_typographic_hyphens_and_spaces():
     assert all(c.passed for c in s.checks if c.name.startswith("mentions"))
 
 
+def test_mentions_match_across_hyphen_and_space():
+    """``oil‑palm`` in the answer is the expected ``oil palm`` (#106), and back."""
+    q = Question(
+        id="q", question="?", kind="synthesis",
+        expect={"mentions": ["oil palm", "agro-industrial"],
+                "mentions_any": ["well-being"]},
+    )  # fmt: skip
+    text = "Oil‑palm estates,  agro industrial  firms and well being."
+    s = score_answer(q, result(text))
+    assert all(c.passed for c in s.checks if c.name.startswith("mentions"))
+    missing = score_answer(q, result("Rubber and cashew."))
+    assert not any(c.passed for c in missing.checks if c.name.startswith("mentions"))
+
+
 def test_score_failures_are_named():
     q = Question(
         id="q", question="?", kind="search",

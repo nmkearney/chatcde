@@ -238,6 +238,7 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
   gpt-oss 9/10, qwen 10/10. Never change code to pass a held-out question; move it to the
   tuned set instead.
 - GPUStack refuses (HTTP 403) or times out when the VPN drops; drop those result lines and rerun.
+- `mentions` / `mentions_any` ignore case and read hyphens as spaces (`oil-palm` = `oil palm`, #106).
 
 ## Expertise finder (`chatcde experts`, #71, 2026-11-15)
 
@@ -245,8 +246,8 @@ Norman Kearney develops it alone (decision 0033); there are no tracks. Repo:
   people, 279 CDE (person-level: CDE on at least one record). No BORIS person ID is stored.
 - Topic match: 400 reranked chunks, best passage >= 0.3, at most 100 records (decision 0046).
 - 3 expertise questions in `tests/questions.yaml` (kind `experts`).
-- Full run, 30 questions x 3 runs: **gpt-oss 86/90, qwen 90/90**; no misrouting to
-  `find_expertise`. `mentions_any` misses non-breaking hyphens ("oil‑palm").
+- Full run, 30 questions x 3 runs: **gpt-oss 88/90, qwen 90/90** (rescored after #106);
+  no misrouting to `find_expertise`.
 
 ## Architecture
 
