@@ -180,17 +180,23 @@ def numbers_in(text: str) -> set[float]:
     return {float(n) for n in _NUMBER.findall(plain)}
 
 
-#: Typographic hyphens and spaces, read as plain ones when matching words:
-#: gpt-oss writes ``Kenney\u2011Lazar`` (U+2011), which a plain ``in`` misses.
+#: Hyphens (plain and typographic) and special spaces, all read as one plain space
+#: when matching words: gpt-oss writes ``Kenney\u2011Lazar`` (U+2011) and
+#: ``oil\u2011palm`` where a question expects ``oil palm`` (#106).
 _PLAIN = str.maketrans(
-    dict.fromkeys("\u2010\u2011\u2012\u2212", "-")
+    dict.fromkeys("-\u2010\u2011\u2012\u2212", " ")
     | dict.fromkeys("\u00a0\u2007\u2009\u202f", " ")
 )
+_SPACES = re.compile(r"\s+")
 
 
 def _fold(text: str) -> str:
-    """``text`` for case-insensitive matching, with plain hyphens and spaces."""
-    return text.translate(_PLAIN).casefold()
+    """``text`` for case-insensitive word matching.
+
+    Hyphens count as spaces and runs of whitespace as one space, so ``oil-palm``,
+    ``oil\u2011palm`` and ``oil palm`` match each other.
+    """
+    return _SPACES.sub(" ", text.translate(_PLAIN)).casefold()
 
 
 def score_answer(

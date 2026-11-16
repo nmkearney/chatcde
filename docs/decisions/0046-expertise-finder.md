@@ -62,11 +62,14 @@ records), while broad ones (SLM: 102) reach `max_records`, as the caveats say.
 ### Evaluation (2026-11-15, `data/eval/71-full.jsonl`)
 All 30 questions, both agent models, 3 runs each (2 qwen answers timed out on the VPN
 and were rerun):
-- gpt-oss-120b **86/90 (96%)**, qwen3.8-27b **90/90 (100%)**; required 0.85.
-- Original 27 questions: gpt-oss 77/81 and qwen 81/81 (M1: 78/81 each). The gpt-oss
-  misses are flaky, not tool choice: a count of 191 instead of 165 (count-sg-interviews),
-  one Myanmar synthesis citing none of the expected records, and two Myanmar answers
-  that wrote "oil‑palm" with a non-breaking hyphen, which `mentions_any` does not match.
+- gpt-oss-120b **88/90 (98%)**, qwen3.8-27b **90/90 (100%)**; required 0.85. (Scored
+  first as 86/90; rescored after #106, see below.)
+- Original 27 questions: gpt-oss 79/81 and qwen 81/81 (M1: 78/81 each). The 2 gpt-oss
+  misses are flaky, not tool choice: a count of 191 instead of 165 (count-sg-interviews)
+  and one WOCAT synthesis citing none of the expected records.
+- Two Myanmar answers first failed `mentions_any` because they wrote "oil‑palm" where the
+  question expects "oil palm". The scorer now reads hyphens as spaces (#106); rescoring
+  `71-full.jsonl` passes both, and changes no result in the M1, #68 or held-out files.
 - No question outside the experts set called `find_expertise`; every expertise answer did.
 
 ## Consequences
